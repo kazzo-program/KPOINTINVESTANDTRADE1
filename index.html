@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QUANTO MACRO // Hedge Fund News & CFD Futures Terminal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="theme-pitch-black">
+
+  <!-- Top Realtime Ticker Marquee -->
+  <header class="terminal-header">
+    <div class="top-nav-bar">
+      <div class="brand-cluster">
+        <div class="brand-radar-icon">
+          <span class="radar-sweep"></span>
+          <span class="radar-dot"></span>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">QUANTO MACRO ALPHA</span>
+          <span class="brand-sub">HEDGE FUND GLOBAL NEWS INTELLIGENCE & EQUITY TERMINAL</span>
+        </div>
+        <span class="terminal-badge live-pulse">LIVE MACRO RADAR</span>
+      </div>
+
+      <div class="macro-regime-status">
+        <div class="regime-item">
+          <span class="regime-label">GLOBAL REGIME</span>
+          <span class="regime-val highlight-blue" id="regime-state">AI CAPEX BOOM / MONETARY RE-CALIBRATION</span>
+        </div>
+        <div class="regime-item">
+          <span class="regime-label">DXY (DOLLAR)</span>
+          <span class="regime-val" id="dxy-quote">104.42 <span class="delta-up">+0.28%</span></span>
+        </div>
+        <div class="regime-item">
+          <span class="regime-label">US 10Y YIELD</span>
+          <span class="regime-val" id="us10y-quote">4.38% <span class="delta-up">+3.2 bps</span></span>
+        </div>
+        <div class="regime-item">
+          <span class="regime-label">GEO RISK (GPR)</span>
+          <span class="regime-val highlight-warn" id="gpr-quote">HIGH (168.4)</span>
+        </div>
+      </div>
+
+      <div class="action-cluster">
+        <div class="live-stream-chip">
+          <span class="pulse-dot"></span>
+          <span>LIVE STREAMING</span>
+        </div>
+        <button id="theme-switch-btn" class="theme-switch-btn" title="Toggle Terminal Interface Theme">
+          <span id="theme-switch-icon">⬛</span>
+          <span id="theme-switch-text">BLACK INTERFACE</span>
+        </button>
+        <button id="scan-now-btn" class="btn-primary-blue">
+          <svg class="icon-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+          </svg>
+          <span>SCAN INTERNET & FOREXFACTORY</span>
+        </button>
+        <div class="scanner-clock">
+          <span class="clock-label">LAST SCAN:</span>
+          <span id="last-scan-time" class="clock-time">JUST NOW</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Ticker Ribbon for Equities and Macro Assets -->
+    <div class="ticker-ribbon" id="ticker-ribbon">
+      <!-- Populated dynamically via app.js -->
+    </div>
+  </header>
+
+  <!-- Main Navigation Tabs Bar -->
+  <nav class="main-tabs-nav">
+    <div class="tab-list">
+      <button class="tab-btn active" data-tab="tab-us-stocks">
+        <span class="tab-icon">🇺🇸</span>
+        <span>TOP 20 US STOCKS</span>
+        <span class="tab-pill accent">Macro Ranked</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-uk-stocks">
+        <span class="tab-icon">🇬🇧</span>
+        <span>TOP 20 UK STOCKS</span>
+        <span class="tab-pill highlight">To Invest Into</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-high-risers">
+        <span class="tab-icon">🚀</span>
+        <span>HIGH RISERS</span>
+        <span class="tab-pill gain">High Growth</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-overview">
+        <span class="tab-icon">⚡</span>
+        <span>MACRO WAR ROOM</span>
+        <span class="tab-pill">7 Assets</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-radar">
+        <span class="tab-icon">🎯</span>
+        <span>CFD & FUTURES RADAR</span>
+        <span class="tab-pill">4H & 24H</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-news-wire">
+        <span class="tab-icon">📡</span>
+        <span>FOREXFACTORY & NEWS WIRE</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-strategy">
+        <span class="tab-icon">🧠</span>
+        <span>MACRO STRATEGY</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-sources-hub">
+        <span class="tab-icon">🔗</span>
+        <span>SOURCES DIRECTORY</span>
+      </button>
+    </div>
+
+    <!-- Quick Asset Anchor Jump Links -->
+    <div class="quick-jump-container">
+      <span class="jump-title">QUICK JUMP:</span>
+      <div class="jump-links">
+        <a href="javascript:void(0)" onclick="switchStockView('us', 'NVDA')" class="jump-chip jump-gold">NVDA (NVIDIA)</a>
+        <a href="javascript:void(0)" onclick="switchStockView('us', 'PLTR')" class="jump-chip">PLTR (Palantir)</a>
+        <a href="javascript:void(0)" onclick="switchStockView('uk', 'RR.L')" class="jump-chip jump-btc">RR.L (Rolls-Royce)</a>
+        <a href="javascript:void(0)" onclick="switchStockView('uk', 'AZN.L')" class="jump-chip">AZN.L (AstraZeneca)</a>
+        <a href="javascript:void(0)" onclick="switchStockView('risers', 'APP')" class="jump-chip jump-oil">APP (AppLovin)</a>
+        <a href="javascript:void(0)" onclick="switchStockView('risers', 'MSTR')" class="jump-chip">MSTR (MicroStrategy)</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="terminal-body">
+
+    <!-- ========================================== -->
+    <!-- TAB: TOP 20 US STOCKS (MACRO NEWS STRATEGY)-->
+    <!-- ========================================== -->
+    <section id="tab-us-stocks" class="tab-content active">
+      <!-- Strategy Hero Banner -->
+      <div class="stock-hero-banner">
+        <div class="stock-hero-top">
+          <div class="stock-hero-title-area">
+            <h2>
+              <span>🇺🇸</span> TOP 20 US STOCKS // INSTITUTIONAL MACRO NEWS STRATEGY
+            </h2>
+            <p class="stock-hero-subtitle">
+              Continuous algorithmic scanning of 1,480+ internet news wires (Bloomberg, Reuters, SEC 13F EDGAR filings, Federal Reserve commentary, WSJ & earnings transcripts). 
+              Stocks are systematically ranked by <strong>Macro Transmission Power, Institutional Whale Inflows, Yield Sensitivity, and Catalytic Momentum</strong>.
+            </p>
+          </div>
+          <div class="stock-hero-stats">
+            <div class="stock-hero-stat-box">
+              <div class="stat-label">SCAN COVERAGE</div>
+              <div class="stat-val">1,482 Wires</div>
+            </div>
+            <div class="stock-hero-stat-box">
+              <div class="stat-label">AVG UPSIDE TARGET</div>
+              <div class="stat-val positive">+24.8%</div>
+            </div>
+            <div class="stock-hero-stat-box">
+              <div class="stat-label">MACRO BIAS</div>
+              <div class="stat-val">BULLISH EXPANSION</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sections for Top Stocks of the Week, Month, and Year -->
+      <div class="timeframe-section-wrapper">
+        <div class="section-header-cluster">
+          <div class="section-header-title">
+            <span>🏆</span> MULTI-TIMEFRAME LEADERBOARDS: TOP US STOCKS OF THE WEEK, MONTH & YEAR
+          </div>
+          <span class="section-header-badge">LIVE PERFORMANCE RANKINGS</span>
+        </div>
+
+        <div class="timeframe-showcase-grid">
+          <!-- Top of the Week -->
+          <div class="timeframe-card card-week">
+            <div class="timeframe-card-header">
+              <div class="timeframe-tag tag-week">
+                <span>⚡</span> TOP OF THE WEEK (5-DAY VELOCITY)
+              </div>
+              <span class="timeframe-sub">Breaking Catalyst Momentum</span>
+            </div>
+            <div class="timeframe-card-list" id="us-top-week-list">
+              <!-- Rendered via app.js -->
+            </div>
+          </div>
+
+          <!-- Top of the Month -->
+          <div class="timeframe-card card-month">
+            <div class="timeframe-card-header">
+              <div class="timeframe-tag tag-month">
+                <span>🚀</span> TOP OF THE MONTH (30-DAY DRIFT)
+              </div>
+              <span class="timeframe-sub">Earnings & Macro Revision</span>
+            </div>
+            <div class="timeframe-card-list" id="us-top-month-list">
+              <!-- Rendered via app.js -->
+            </div>
+          </div>
+
+          <!-- Top of the Year -->
+          <div class="timeframe-card card-year">
+            <div class="timeframe-card-header">
+              <div class="timeframe-tag tag-year">
+                <span>👑</span> TOP OF THE YEAR (YTD COMPOUNDERS)
+              </div>
+              <span class="timeframe-sub">Secular Macro Hegemony</span>
+            </div>
+            <div class="timeframe-card-list" id="us-top-year-list">
+              <!-- Rendered via app.js -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Filter & Search Toolbar -->
+      <div class="stock-toolbar">
+        <div class="toolbar-left">
+          <div class="timeframe-filter-chips">
+            <button class="tf-filter-chip active" data-timeframe="all" onclick="filterUsStocks('timeframe', 'all', this)">⭐ All Top 20</button>
+            <button class="tf-filter-chip" data-timeframe="week" onclick="filterUsStocks('timeframe', 'week', this)">⚡ Top of Week</button>
+            <button class="tf-filter-chip" data-timeframe="month" onclick="filterUsStocks('timeframe', 'month', this)">🚀 Top of Month</button>
+            <button class="tf-filter-chip" data-timeframe="year" onclick="filterUsStocks('timeframe', 'year', this)">👑 Top of Year</button>
+          </div>
+
+          <div class="industry-filter-wrap">
+            <select id="us-industry-select" onchange="filterUsStocks('industry', this.value)">
+              <option value="ALL">🌐 All Industries & Sectors</option>
+              <option value="Semiconductors & AI">⚡ Semiconductors & AI Hardware</option>
+              <option value="Enterprise AI & Software">💻 Enterprise AI & Software Analytics</option>
+              <option value="Cloud Computing & Infrastructure">☁️ Cloud Computing & Infrastructure</option>
+              <option value="Aerospace & Defense">🛡️ Aerospace & Defense</option>
+              <option value="Energy & Power Infrastructure">⚡ Nuclear Energy & Power Infrastructure</option>
+              <option value="Biopharmaceuticals">🧬 Biopharmaceuticals & GLP-1</option>
+              <option value="Financials & Banking">🏛️ Financials & Mega-Bank Capital</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="toolbar-right">
+          <div class="stock-search-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="us-stock-search" class="stock-search-input" placeholder="Search US stock, ticker, industry..." oninput="filterUsStocks('search', this.value)">
+          </div>
+
+          <div class="view-toggle-group">
+            <button class="view-btn active" id="us-view-table-btn" onclick="setStockViewMode('us', 'table')">TABLE</button>
+            <button class="view-btn" id="us-view-cards-btn" onclick="setStockViewMode('us', 'cards')">CARDS</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top 20 Table View -->
+      <div class="stock-table-container" id="us-stocks-table-view">
+        <table class="stock-terminal-table">
+          <thead>
+            <tr>
+              <th style="width: 50px;">RANK</th>
+              <th>TICKER & COMPANY</th>
+              <th>INDUSTRY</th>
+              <th>LIVE PRICE</th>
+              <th>24H CHANGE</th>
+              <th>MACRO SCORE</th>
+              <th>INTERNET NEWS CATALYST & SIGNAL</th>
+              <th>HEDGE FUND TARGET</th>
+            </tr>
+          </thead>
+          <tbody id="us-stocks-table-body">
+            <!-- Rendered dynamically via app.js -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Top 20 Cards View (Toggleable) -->
+      <div class="stock-cards-grid" id="us-stocks-cards-view" style="display: none;">
+        <!-- Rendered dynamically via app.js -->
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB: TOP 20 UK STOCKS (TO INVEST INTO)     -->
+    <!-- ========================================== -->
+    <section id="tab-uk-stocks" class="tab-content">
+      <!-- Strategy Hero Banner -->
+      <div class="stock-hero-banner" style="border-left-color: #38bdf8;">
+        <div class="stock-hero-top">
+          <div class="stock-hero-title-area">
+            <h2>
+              <span>🇬🇧</span> TOP 20 UK STOCKS // INSTITUTIONAL FTSE ALLOCATION
+            </h2>
+            <p class="stock-hero-subtitle">
+              High-conviction UK equities to invest into, scanned across London market syndicates, Bank of England rate transmission models, 
+              global defense contracts, and commodity arbitrage. Featuring high cash yields, sterling-hedged multinational revenues, and sovereign compounders.
+            </p>
+          </div>
+          <div class="stock-hero-stats">
+            <div class="stock-hero-stat-box">
+              <div class="stat-label">COVERAGE</div>
+              <div class="stat-val">20 UK Leaders</div>
+            </div>
+            <div class="stock-hero-stat-box">
+              <div class="stat-label">AVG DIVIDEND YIELD</div>
+              <div class="stat-val positive">3.65%</div>
+            </div>
+            <div class="stock-hero-stat-box">
+              <div class="stat-label">AVG TARGET UPSIDE</div>
+              <div class="stat-val positive">+19.4%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- UK Sections for Top Stocks of the Week, Month, and Year -->
+      <div class="timeframe-section-wrapper">
+        <div class="section-header-cluster">
+          <div class="section-header-title">
+            <span>🏆</span> MULTI-TIMEFRAME LEADERBOARDS: TOP UK STOCKS OF THE WEEK, MONTH & YEAR
+          </div>
+          <span class="section-header-badge">LIVE UK MARKET DATA</span>
+        </div>
+
+        <div class="timeframe-showcase-grid">
+          <!-- Top of the Week -->
+          <div class="timeframe-card card-week">
+            <div class="timeframe-card-header">
+              <div class="timeframe-tag tag-week">
+                <span>⚡</span> TOP UK OF THE WEEK
+              </div>
+              <span class="timeframe-sub">5-Day Sterling Momentum</span>
+            </div>
+            <div class="timeframe-card-list" id="uk-top-week-list">
+              <!-- Rendered via app.js -->
+            </div>
+          </div>
+
+          <!-- Top of the Month -->
+          <div class="timeframe-card card-month">
+            <div class="timeframe-card-header">
+              <div class="timeframe-tag tag-month">
+                <span>🚀</span> TOP UK OF THE MONTH
+              </div>
+              <span class="timeframe-sub">30-Day Inflow Velocity</span>
+            </div>
+            <div class="timeframe-card-list" id="uk-top-month-list">
+              <!-- Rendered via app.js -->
+            </div>
+          </div>
+
+          <!-- Top of the Year -->
+          <div class="timeframe-card card-year">
+            <div class="timeframe-card-header">
+              <div class="timeframe-tag tag-year">
+                <span>👑</span> TOP UK OF THE YEAR
+              </div>
+              <span class="timeframe-sub">YTD Dividend & Capital Growth</span>
+            </div>
+            <div class="timeframe-card-list" id="uk-top-year-list">
+              <!-- Rendered via app.js -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- UK Toolbar -->
+      <div class="stock-toolbar">
+        <div class="toolbar-left">
+          <div class="timeframe-filter-chips">
+            <button class="tf-filter-chip active" data-timeframe="all" onclick="filterUkStocks('timeframe', 'all', this)">⭐ All Top 20</button>
+            <button class="tf-filter-chip" data-timeframe="week" onclick="filterUkStocks('timeframe', 'week', this)">⚡ Top of Week</button>
+            <button class="tf-filter-chip" data-timeframe="month" onclick="filterUkStocks('timeframe', 'month', this)">🚀 Top of Month</button>
+            <button class="tf-filter-chip" data-timeframe="year" onclick="filterUkStocks('timeframe', 'year', this)">👑 Top of Year</button>
+          </div>
+
+          <div class="industry-filter-wrap">
+            <select id="uk-industry-select" onchange="filterUkStocks('industry', this.value)">
+              <option value="ALL">🌐 All UK Industries</option>
+              <option value="Aerospace & Defense">🛡️ Aerospace & Defense</option>
+              <option value="Biopharmaceuticals">🧬 Biopharmaceuticals & Vaccines</option>
+              <option value="Energy & LNG Infrastructure">🛢️ Integrated Oil, Gas & LNG</option>
+              <option value="Semiconductor IP & Architecture">⚡ Semiconductor IP Architecture</option>
+              <option value="Financials & Banking">🏛️ Financials & Global Banking</option>
+              <option value="Mining & Critical Metals">⛏️ Mining & Green Metals</option>
+              <option value="Information Analytics & Data">📊 Enterprise Data Analytics</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="toolbar-right">
+          <div class="stock-search-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="uk-stock-search" class="stock-search-input" placeholder="Search UK stock, ticker, industry..." oninput="filterUkStocks('search', this.value)">
+          </div>
+
+          <div class="view-toggle-group">
+            <button class="view-btn active" id="uk-view-table-btn" onclick="setStockViewMode('uk', 'table')">TABLE</button>
+            <button class="view-btn" id="uk-view-cards-btn" onclick="setStockViewMode('uk', 'cards')">CARDS</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- UK Table View -->
+      <div class="stock-table-container" id="uk-stocks-table-view">
+        <table class="stock-terminal-table">
+          <thead>
+            <tr>
+              <th style="width: 50px;">RANK</th>
+              <th>TICKER & COMPANY</th>
+              <th>INDUSTRY</th>
+              <th>LIVE PRICE (GBX / £)</th>
+              <th>24H CHANGE</th>
+              <th>MACRO SCORE</th>
+              <th>DIV YIELD</th>
+              <th>INTERNET NEWS CATALYST & SIGNAL</th>
+              <th>HEDGE FUND TARGET</th>
+            </tr>
+          </thead>
+          <tbody id="uk-stocks-table-body">
+            <!-- Rendered dynamically via app.js -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- UK Cards View -->
+      <div class="stock-cards-grid" id="uk-stocks-cards-view" style="display: none;">
+        <!-- Rendered dynamically via app.js -->
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB: HIGH RISERS (EXPLOSIVE GROWTH & VALUE)-->
+    <!-- ========================================== -->
+    <section id="tab-high-risers" class="tab-content">
+      <!-- Strategy Hero Banner -->
+      <div class="stock-hero-banner high-riser-hero">
+        <div class="stock-hero-top">
+          <div class="stock-hero-title-area">
+            <h2>
+              <span>🚀</span> HIGH RISERS // RAPID VALUE ACCELERATION RADAR
+            </h2>
+            <p class="stock-hero-subtitle">
+              High-growth breakout equities exhibiting triple-digit revenue expansion, exponential order backlogs, rising enterprise value, 
+              and immense institutional accumulation velocity. Monitored for immediate momentum breakouts and structural multi-year compounding.
+            </p>
+          </div>
+          <div class="stock-hero-stats">
+            <div class="stock-hero-stat-box">
+              <div class="stat-label">AVG YOY REVENUE GROWTH</div>
+              <div class="stat-val positive">+78.4%</div>
+            </div>
+            <div class="stock-hero-stat-box">
+              <div class="stat-label">AVG 1-YEAR RETURN</div>
+              <div class="stat-val positive">+214.5%</div>
+            </div>
+            <div class="stock-hero-stat-box">
+              <div class="stat-label">MOMENTUM VELOCITY</div>
+              <div class="stat-val">MAXIMUM EXPANSION</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- High Risers Timeframe Leaderboards -->
+      <div class="timeframe-section-wrapper">
+        <div class="section-header-cluster">
+          <div class="section-header-title">
+            <span>⚡</span> HIGH RISERS MULTI-TIMEFRAME SHOWCASE: WEEK, MONTH & YEAR GAINERS
+          </div>
+          <span class="section-header-badge">MAXIMUM GROWTH SURGE</span>
+        </div>
+
+        <div class="timeframe-showcase-grid">
+          <!-- Top Risers of the Week -->
+          <div class="timeframe-card card-week">
+            <div class="timeframe-card-header">
+              <div class="timeframe-tag tag-week">
+                <span>⚡</span> FASTEST RISERS OF THE WEEK
+              </div>
+              <span class="timeframe-sub">5-Day Breakout Surge</span>
+            </div>
+            <div class="timeframe-card-list" id="risers-top-week-list">
+              <!-- Rendered via app.js -->
+            </div>
+          </div>
+
+          <!-- Top Risers of the Month -->
+          <div class="timeframe-card card-month">
+            <div class="timeframe-card-header">
+              <div class="timeframe-tag tag-month">
+                <span>🚀</span> FASTEST RISERS OF THE MONTH
+              </div>
+              <span class="timeframe-sub">30-Day Growth Acceleration</span>
+            </div>
+            <div class="timeframe-card-list" id="risers-top-month-list">
+              <!-- Rendered via app.js -->
+            </div>
+          </div>
+
+          <!-- Top Risers of the Year -->
+          <div class="timeframe-card card-year">
+            <div class="timeframe-card-header">
+              <div class="timeframe-tag tag-year">
+                <span>👑</span> FASTEST RISERS OF THE YEAR
+              </div>
+              <span class="timeframe-sub">YTD High-Value Champions</span>
+            </div>
+            <div class="timeframe-card-list" id="risers-top-year-list">
+              <!-- Rendered via app.js -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- High Risers Toolbar -->
+      <div class="stock-toolbar">
+        <div class="toolbar-left">
+          <div class="timeframe-filter-chips">
+            <button class="tf-filter-chip active" data-timeframe="all" onclick="filterRisers('timeframe', 'all', this)">⭐ All High Risers</button>
+            <button class="tf-filter-chip" data-timeframe="week" onclick="filterRisers('timeframe', 'week', this)">⚡ Top of Week</button>
+            <button class="tf-filter-chip" data-timeframe="month" onclick="filterRisers('timeframe', 'month', this)">🚀 Top of Month</button>
+            <button class="tf-filter-chip" data-timeframe="year" onclick="filterRisers('timeframe', 'year', this)">👑 Top of Year</button>
+          </div>
+
+          <div class="industry-filter-wrap">
+            <select id="risers-industry-select" onchange="filterRisers('industry', this.value)">
+              <option value="ALL">🌐 All High Growth Industries</option>
+              <option value="AI & Enterprise Software">💻 AI & Enterprise Software</option>
+              <option value="Semiconductors & Connectivity">⚡ Semiconductors & Connectivity</option>
+              <option value="AI Liquid Cooling & Infrastructure">❄️ AI Liquid Cooling & Power</option>
+              <option value="Quantum & Advanced Compute">⚛️ Quantum Computing & Deep Tech</option>
+              <option value="Space Launch & Aerospace">🚀 Commercial Space & Satellites</option>
+              <option value="Bitcoin Treasury & Digital Assets">🪙 Bitcoin Treasury Reserves</option>
+              <option value="Biotech & GLP-1 Therapeutics">🧬 Biotech & Obesity GLP-1</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="toolbar-right">
+          <div class="stock-search-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="risers-stock-search" class="stock-search-input" placeholder="Search high risers..." oninput="filterRisers('search', this.value)">
+          </div>
+
+          <div class="view-toggle-group">
+            <button class="view-btn active" id="risers-view-table-btn" onclick="setStockViewMode('risers', 'table')">TABLE</button>
+            <button class="view-btn" id="risers-view-cards-btn" onclick="setStockViewMode('risers', 'cards')">CARDS</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- High Risers Table View -->
+      <div class="stock-table-container" id="risers-stocks-table-view">
+        <table class="stock-terminal-table">
+          <thead>
+            <tr>
+              <th style="width: 50px;">RANK</th>
+              <th>TICKER & COMPANY</th>
+              <th>INDUSTRY</th>
+              <th>LIVE PRICE</th>
+              <th>YOY REV GROWTH</th>
+              <th>1-WEEK MOVE</th>
+              <th>1-MONTH MOVE</th>
+              <th>1-YEAR MOVE</th>
+              <th>VOL SURGE</th>
+              <th>RISING VALUE DRIVER & CATALYST</th>
+            </tr>
+          </thead>
+          <tbody id="risers-stocks-table-body">
+            <!-- Rendered dynamically via app.js -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- High Risers Cards View -->
+      <div class="stock-cards-grid" id="risers-stocks-cards-view" style="display: none;">
+        <!-- Rendered dynamically via app.js -->
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 1: MACRO WAR ROOM (GLOBAL OVERVIEW)    -->
+    <!-- ========================================== -->
+    <section id="tab-overview" class="tab-content">
+      <!-- Strategy Mission Banner -->
+      <div class="macro-banner-card">
+        <div class="banner-content">
+          <div class="banner-badge">MACRO HEDGE FUND ALPHA SYSTEM</div>
+          <h2>Global Geopolitical & Economic News Scanner</h2>
+          <p>
+            Continuous real-time ingestion of high-impact macroeconomic catalysts from <strong>ForexFactory</strong>, 
+            <strong>Reuters</strong>, <strong>Bloomberg</strong>, <strong>FXStreet</strong>, and central bank communications. 
+            Synthesized through our multi-factor transmission model to generate clear <strong>BUY / SELL / NEUTRAL</strong> directives 
+            with projected <strong>4-Hour</strong> and <strong>24-Hour (Next Day)</strong> price ranges across premier CFD & Futures contracts.
+          </p>
+        </div>
+        <div class="banner-metrics">
+          <div class="banner-stat-box">
+            <span class="stat-num" id="stat-buy-count">3</span>
+            <span class="stat-desc text-bullish">BUY SIGNALS</span>
+          </div>
+          <div class="banner-stat-box">
+            <span class="stat-num" id="stat-sell-count">3</span>
+            <span class="stat-desc text-bearish">SELL SIGNALS</span>
+          </div>
+          <div class="banner-stat-box">
+            <span class="stat-num" id="stat-neutral-count">1</span>
+            <span class="stat-desc text-neutral">NEUTRAL</span>
+          </div>
+          <div class="banner-stat-box">
+            <span class="stat-num" id="stat-news-scanned">48</span>
+            <span class="stat-desc">SOURCES SCANNED</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Summary Matrix Grid -->
+      <div class="section-title-bar">
+        <h3>MACRO CONVICTION SUMMARY MATRIX</h3>
+        <span class="subtext">4-Hour Intraday & 24-Hour Positional Hedge Fund Directives</span>
+      </div>
+
+      <div class="matrix-table-container">
+        <table class="macro-matrix-table">
+          <thead>
+            <tr>
+              <th>ASSET / CONTRACT</th>
+              <th>MARKET PRICE</th>
+              <th>HEDGE FUND BIAS</th>
+              <th>CONVICTION</th>
+              <th>NEXT 4-HOURS TARGET</th>
+              <th>NEXT 24-HOURS TARGET</th>
+              <th>DOMINANT CATALYST</th>
+              <th>ACTION</th>
+            </tr>
+          </thead>
+          <tbody id="macro-summary-tbody">
+            <!-- Dynamic rows populated via app.js -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Geopolitical & Macro Catalyst Grid -->
+      <div class="macro-columns-grid">
+        <!-- Column 1: Live ForexFactory Economic Radar -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <span class="panel-indicator red-glow"></span>
+              <h4>FOREXFACTORY HIGH-IMPACT CALENDAR RADAR</h4>
+            </div>
+            <a href="https://www.forexfactory.com/calendar" target="_blank" rel="noopener noreferrer" class="source-link-chip">
+              ForexFactory.com ↗
+            </a>
+          </div>
+          <div class="calendar-items-list" id="forexfactory-calendar-preview">
+            <!-- Populated via app.js -->
+          </div>
+        </div>
+
+        <!-- Column 2: Geopolitical Hotspots & Transmission -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <span class="panel-indicator yellow-glow"></span>
+              <h4>GEOPOLITICAL HOTSPOTS & ASSET TRANSMISSION</h4>
+            </div>
+            <a href="https://www.reuters.com/world/" target="_blank" rel="noopener noreferrer" class="source-link-chip">
+              Reuters Geopolitics ↗
+            </a>
+          </div>
+          <div class="geopolitical-hotspots-list" id="geopolitical-hotspots-list">
+            <!-- Populated via app.js -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: CFD & FUTURES RADAR (PER-ASSET DEEP)-->
+    <!-- ========================================== -->
+    <section id="tab-radar" class="tab-content">
+      <div class="radar-header-toolbar">
+        <div>
+          <h2>INDIVIDUAL CFD & FUTURES MACRO HUBS</h2>
+          <p class="section-lead">
+            Dedicated multi-timeframe analysis for <strong>XAUUSD</strong>, <strong>BTCUSD</strong>, and the 
+            <strong>Top 5 most liquid global contracts</strong>. Featuring explicit 4-Hour and 24-Hour price targets, 
+            macro factor scores, and direct links to breaking news sources.
+          </p>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="filter-pills">
+          <span class="filter-label">FILTER BIAS:</span>
+          <button class="filter-pill active" data-filter="ALL">ALL (7)</button>
+          <button class="filter-pill" data-filter="BUY">BUY / LONG</button>
+          <button class="filter-pill" data-filter="SELL">SELL / SHORT</button>
+          <button class="filter-pill" data-filter="NEUTRAL">NEUTRAL</button>
+        </div>
+      </div>
+
+      <!-- ASSET SECTIONS CONTAINER -->
+      <div class="assets-deep-container" id="assets-deep-container">
+        <!-- Rendered dynamically via app.js with full individual detail for each asset -->
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: FOREXFACTORY & LIVE NEWS WIRE       -->
+    <!-- ========================================== -->
+    <section id="tab-news-wire" class="tab-content">
+      <div class="news-wire-header">
+        <div>
+          <h2>LIVE FINANCIAL & GEOPOLITICAL NEWS WIRE</h2>
+          <p class="section-lead">
+            Aggregated stream of breaking headlines from ForexFactory, Reuters, Bloomberg, FXStreet, Kitco, CoinDesk, and OilPrice.
+            Each headline is classified with real-time sentiment polarity and linked directly to the primary publication.
+          </p>
+        </div>
+        <div class="news-search-box">
+          <input type="text" id="news-search-input" placeholder="Search keywords (e.g. Gold, Fed, Iran, CPI, Crude, Taiwan)...">
+          <select id="news-source-filter" class="select-blue">
+            <option value="ALL">All Major Sources</option>
+            <option value="ForexFactory">ForexFactory</option>
+            <option value="Reuters">Reuters</option>
+            <option value="Bloomberg">Bloomberg</option>
+            <option value="FXStreet">FXStreet</option>
+            <option value="Kitco">Kitco Metals</option>
+            <option value="CoinDesk">CoinDesk / Crypto</option>
+            <option value="OilPrice">OilPrice.com</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="news-wire-stream" id="news-wire-stream">
+        <!-- Populated via app.js -->
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: HEDGE FUND MACRO STRATEGY EXPLAINED -->
+    <!-- ========================================== -->
+    <section id="tab-strategy" class="tab-content">
+      <div class="strategy-doc-card">
+        <h2>HOW MACRO HEDGE FUNDS TRADE NEWS & GEOPOLITICS</h2>
+        <p class="lead-text">
+          Discretionary and quantitative macro hedge funds (such as Bridgewater, Brevan Howard, Tudor, and Citadel) 
+          do not trade headlines in isolation. They evaluate news through a <strong>systematic transmission matrix</strong> 
+          that links real-world catalysts to capital flows, interest rate expectations, and liquidity pricing.
+        </p>
+
+        <div class="strategy-steps-grid">
+          <div class="step-card">
+            <div class="step-badge">PILLAR 1</div>
+            <h3>Geopolitical Risk Transmission</h3>
+            <p>
+              When military conflicts, territorial disputes, or embargoes flare up (e.g., Middle East, Black Sea, Taiwan Strait), 
+              capital seeks immediate non-yielding or sovereign safe harbors.
+            </p>
+            <ul class="step-list">
+              <li><strong>Gold (XAUUSD):</strong> Primary beneficiary of unencumbered sovereign safe-haven flows.</li>
+              <li><strong>Crude Oil (USOIL):</strong> Direct supply risk premium if shipping routes or refining hubs are endangered.</li>
+              <li><strong>Equities (US500/NAS100):</strong> Compression of valuation multiples due to risk-off liquidity pullbacks.</li>
+            </ul>
+          </div>
+
+          <div class="step-card">
+            <div class="step-badge">PILLAR 2</div>
+            <h3>ForexFactory & High-Impact Economic Data</h3>
+            <p>
+              ForexFactory categorizes macroeconomic prints into Red (High Impact), Orange (Medium), and Yellow (Low). 
+              Hedge funds compare <strong>Actual vs Consensus vs Previous</strong>:
+            </p>
+            <ul class="step-list">
+              <li><strong>Hot CPI / PCE / NFP:</strong> Drives up Treasury yields & US Dollar (DXY). Bearish for Gold and BTC in 4H window; pressure on Equities.</li>
+              <li><strong>Cooling Inflation / Soft Labor:</strong> Triggers Fed rate cut expectations, weakening USD and catalyzing rallies in XAUUSD, BTCUSD, and US500.</li>
+            </ul>
+          </div>
+
+          <div class="step-card">
+            <div class="step-badge">PILLAR 3</div>
+            <h3>Dual-Timeframe Architecture: 4H vs 24H</h3>
+            <p>
+              Why separate the next 4 hours from the next 24 hours?
+            </p>
+            <ul class="step-list">
+              <li><strong>Next 4-Hours (Tactical Liquidity Drift):</strong> Captures immediate session reaction, orderbook liquidity sweeps, algorithmic headline stop-runs, and NY/London overlap volatility.</li>
+              <li><strong>Next 24-Hours (Positional Macro Bias):</strong> Dictated by institutional repricing of daily closes, overnight repo rates, sovereign debt auction absorptions, and daily trend continuation.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="formula-box">
+          <h4>Hedge Fund Composite Macro Sentiment Scoring Function</h4>
+          <code>
+            Composite Score = (0.30 × Geopolitical_Risk_Delta) + (0.30 × Central_Bank_Yield_Differential) + (0.20 × Economic_Surprise_Index) + (0.20 × Orderflow_Momentum)
+          </code>
+          <p class="formula-note">
+            Scores > +35 trigger <strong>BUY / STRONG BUY</strong> directives. Scores < -35 trigger <strong>SELL / STRONG SELL</strong> directives. 
+            Scores between -35 and +35 indicate range-bound consolidation or binary catalyst anticipation.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 5: MAJOR SOURCES DIRECTORY HUB         -->
+    <!-- ========================================== -->
+    <section id="tab-sources-hub" class="tab-content">
+      <div class="sources-hub-header">
+        <h2>DIRECT ACCESS: MAJOR FINANCIAL & GEOPOLITICAL HUBS</h2>
+        <p class="section-lead">
+          Verified, live links to the premier sources scanned by this terminal. Open any source in a new tab to cross-verify intelligence.
+        </p>
+      </div>
+
+      <div class="sources-directory-grid" id="sources-directory-grid">
+        <!-- Populated via app.js -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Notification Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Footer -->
+  <footer class="terminal-footer">
+    <div class="footer-left">
+      <span class="status-live-dot"></span>
+      <span>FEED STATUS: ACTIVE & SYNCED</span>
+      <span class="divider">|</span>
+      <span>STRATEGY: MACRO HEDGE FUND NEWS TRANSMISSION</span>
+      <span class="divider">|</span>
+      <span>EQUITIES COVERAGE: TOP 20 US, TOP 20 UK, HIGH RISERS</span>
+      <span class="divider">|</span>
+      <span>FUTURES: XAUUSD, BTCUSD, EURUSD, US500, NAS100, USOIL, USDJPY</span>
+    </div>
+    <div class="footer-right">
+      <span>QUANTO MACRO TERMINAL // PITCH BLACK HEDGE FUND SUITE</span>
+    </div>
+  </footer>
+
+  <!-- Scanner Console Overlay Modal -->
+  <div id="scanner-console-modal" class="scanner-console-modal">
+    <div class="scanner-console-box">
+      <div class="scanner-console-header">
+        <div class="console-title">
+          <svg class="icon-spin active" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+          </svg>
+          <span>MACRO INTERNET NEWS TRANSMISSION ENGINE // LIVE CRAWLER</span>
+        </div>
+        <button class="console-close-btn" onclick="closeScannerModal()">&times;</button>
+      </div>
+      <div class="scanner-console-body" id="scanner-console-body">
+        <!-- Live logs injected dynamically -->
+      </div>
+      <div class="scanner-progress-bar-wrap">
+        <div class="scanner-progress-bar">
+          <div id="scanner-progress-fill" class="scanner-progress-fill"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
