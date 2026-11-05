@@ -3,402 +3,704 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KPOINT // Polymarket Macro Alpha Terminal</title>
-  <meta name="description" content="Institutional Prediction Market Intelligence - Top 10 Live Polymarket Markets for Sport, Finance, Crypto, Politics & Football with Macro Hedge Fund Advisory">
+  <title>QUANTO EQUITIES // Institutional Macro Stock Terminal</title>
+  <meta name="description" content="Institutional Macro Hedge Fund Stock Terminal - Real-Time Yahoo Finance API Quotes & News, Top 20 US Stocks, Top 20 UK Stocks, High Risers and Multi-Timeframe Performance">
   
-  <!-- Modern Clean Typography Fonts -->
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="styles.css">
 </head>
-<body class="theme-blue-white">
+<body class="theme-pitch-black">
 
-  <!-- Top Real-Time Institutional Marquee Ribbon -->
-  <div class="top-marquee-bar">
-    <div class="marquee-track" id="top-marquee-track">
-      <div class="marquee-content" id="marquee-content-container">
-        <span class="ticker-pill"><span class="ticker-dot live-pulse"></span> LIVE POLYMARKET STREAM</span>
-        <span class="ticker-item"><strong class="ticker-sym">BTC > $102.5K:</strong> <span class="ticker-val up">YES 68% ($0.68)</span></span>
-        <span class="ticker-item"><strong class="ticker-sym">S&P 500 ATH:</strong> <span class="ticker-val up">YES 72% ($0.72)</span></span>
-        <span class="ticker-item"><strong class="ticker-sym">MAN CITY v ARSENAL:</strong> <span class="ticker-val up">CITY 54% ($0.54)</span></span>
-        <span class="ticker-item"><strong class="ticker-sym">FED RATE CUT:</strong> <span class="ticker-val up">YES 84% ($0.84)</span></span>
-        <span class="ticker-item"><strong class="ticker-sym">GOLD > $2,820:</strong> <span class="ticker-val up">YES 66% ($0.66)</span></span>
-        <span class="ticker-item"><strong class="ticker-sym">REAL MADRID v BARCA:</strong> <span class="ticker-val up">MADRID 53% ($0.53)</span></span>
-        <span class="ticker-item"><strong class="ticker-sym">BAYERN v DORTMUND:</strong> <span class="ticker-val up">BAYERN 64% ($0.64)</span></span>
-        <span class="ticker-item"><strong class="ticker-sym">US SENATE CONFIRM:</strong> <span class="ticker-val up">YES 73% ($0.73)</span></span>
-        <span class="ticker-item"><strong class="ticker-sym">CELTICS > NUGGETS:</strong> <span class="ticker-val up">CELTICS 64% ($0.64)</span></span>
-        <span class="ticker-pill secondary">210 MARKETS STREAMING LIVE</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Primary Royal Navy & White Navigation Header -->
-  <header class="app-header">
-    <div class="header-container">
-      <div class="brand-block">
-        <div class="brand-crest">
-          <span class="crest-letter">K</span>
-          <span class="crest-dot"></span>
+  <!-- Top Realtime Ticker Marquee (100% Stocks) -->
+  <header class="terminal-header">
+    <div class="top-nav-bar">
+      <div class="brand-cluster">
+        <div class="brand-radar-icon">
+          <span class="radar-dot"></span>
         </div>
-        <div class="brand-identity">
-          <div class="brand-title-row">
-            <h1 class="brand-title">KPOINT <span class="brand-subtitle-badge">MACRO ALPHA</span></h1>
-            <span class="badge-status live-glow">
-              <span class="status-indicator"></span> LIVE POLYMARKET FEED ACTIVE (<span id="live-time-ticker">JUST NOW</span>)
-            </span>
-          </div>
-          <p class="brand-tagline">Polymarket Institutional Intelligence // Real-Time Macro Hedge Fund News & Social Media Radar</p>
+        <div class="brand-text">
+          <span class="brand-title">QUANTO EQUITIES ALPHA</span>
+          <span class="brand-sub">HEDGE FUND MACRO STOCK TERMINAL // 100% EQUITIES</span>
+        </div>
+        <div class="yahoo-status-badge">
+          <span class="pulse-dot"></span>
+          <span>YAHOO FINANCE API: LIVE SYNCED</span>
         </div>
       </div>
 
-      <!-- Quick Metrics Strip -->
-      <div class="header-stats-strip">
-        <div class="stat-cell">
-          <span class="stat-caption">24H VOLUME</span>
-          <span class="stat-number highlight-blue" id="header-stat-volume">$342.8M</span>
+      <div class="macro-regime-status">
+        <div class="regime-item">
+          <span class="regime-label">S&P 500 REGIME</span>
+          <span class="regime-val" id="sp500-state" style="color:#00ff88;">AI CAPEX BOOM & RESILIENCE</span>
         </div>
-        <div class="stat-cell">
-          <span class="stat-caption">DATA FEED</span>
-          <span class="stat-number text-green" id="header-stat-feed">🟢 REAL-TIME SYNC</span>
+        <div class="regime-item">
+          <span class="regime-label">FTSE 100 REGIME</span>
+          <span class="regime-val" id="ftse-state" style="color:#38bdf8;">STERLING EXPORT DIVIDENDS</span>
         </div>
-        <div class="stat-cell">
-          <span class="stat-caption">SMART MONEY SKEW</span>
-          <span class="stat-number text-green" id="header-stat-skew">68% BULLISH YES</span>
+        <div class="regime-item">
+          <span class="regime-label">US 10Y YIELD</span>
+          <span class="regime-val" id="us10y-quote">4.38% <span style="color:#00ff88; font-size:10px;">-2.4 bps</span></span>
         </div>
-        <div class="stat-cell">
-          <span class="stat-caption">LIVE MARKETS</span>
-          <span class="stat-number" id="header-stat-total">210 ACTIVE</span>
+        <div class="regime-item">
+          <span class="regime-label">STOCKS MONITORED</span>
+          <span class="regime-val" style="color:#fbbf24;" id="stocks-monitored-count">56 LIVE EQUITIES</span>
         </div>
       </div>
 
-      <!-- Live Action Buttons -->
-      <div class="header-actions">
-        <button id="btn-scan-macro" class="btn-primary-blue" title="Trigger Real-Time Macro Hedge Fund Scan across News, Social Media & Polymarket API">
-          <svg class="btn-icon icon-refresh" id="scan-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+      <div class="action-cluster">
+        <button id="yahoo-sync-btn" class="btn-yahoo-refresh" title="Sync live stock prices and news directly from Yahoo Finance API">
+          <svg class="icon-spin" id="sync-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
           </svg>
-          <span id="scan-btn-text">REFRESH LIVE DATA</span>
+          <span id="sync-btn-label">REFRESH YAHOO FINANCE</span>
         </button>
 
-        <button id="btn-watchlist-toggle" class="btn-secondary-white">
-          <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-          </svg>
-          <span>WATCHLIST (<span id="watchlist-count">0</span>)</span>
+        <button id="theme-switch-btn" class="theme-switch-btn" title="Toggle Terminal Interface Theme">
+          <span id="theme-switch-icon">⬛</span>
+          <span id="theme-switch-text">BLACK INTERFACE</span>
         </button>
+
+        <div class="scanner-clock">
+          <span>LAST SYNC:</span>
+          <span id="last-sync-time" class="clock-time">JUST NOW</span>
+        </div>
       </div>
+    </div>
+
+    <!-- Live Ticker Ribbon for Premier Stocks -->
+    <div class="ticker-ribbon" id="ticker-ribbon">
+      <!-- Populated dynamically via app.js -->
     </div>
   </header>
 
-  <!-- Live Sync Bar (Real-Time Notification Banner) -->
-  <div class="live-sync-banner" id="live-sync-banner">
-    <div class="live-banner-inner">
-      <div class="live-banner-left">
-        <span class="live-beacon"><span class="beacon-wave"></span><span class="beacon-core"></span></span>
-        <span class="live-banner-text">
-          <strong>LIVE MARKET FEED:</strong> Connected to Polymarket Order Books. Live prices, volumes, news catalysts, and social sentiment refresh on every page reload & every 15s.
-        </span>
-      </div>
-      <div class="live-banner-right">
-        <span class="live-clock-badge">LAST SYNCED: <strong id="last-sync-badge">JUST NOW</strong></span>
-        <button id="quick-refresh-link" class="quick-refresh-link">⚡ Force Refresh</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Main Navigation Tabs Bar -->
-  <nav class="main-nav-bar">
-    <div class="nav-container">
-      <div class="tabs-scroll-wrapper">
-        <button class="nav-tab active" data-category="overview">
-          <span class="tab-icon">⚡</span>
-          <span class="tab-label">Executive Overview</span>
-        </button>
-        <button class="nav-tab" data-category="politics">
-          <span class="tab-icon">🏛️</span>
-          <span class="tab-label">Politics</span>
-          <span class="tab-badge">Top 10</span>
-        </button>
-        <button class="nav-tab" data-category="finance">
-          <span class="tab-icon">💰</span>
-          <span class="tab-label">Finance</span>
-          <span class="tab-badge">Top 10</span>
-        </button>
-        <button class="nav-tab" data-category="crypto">
-          <span class="tab-icon">🪙</span>
-          <span class="tab-label">Crypto</span>
-          <span class="tab-badge">Top 10</span>
-        </button>
-        <button class="nav-tab" data-category="sport">
-          <span class="tab-icon">🏆</span>
-          <span class="tab-label">Sport</span>
-          <span class="tab-badge">Top 10</span>
-        </button>
-        <button class="nav-tab nav-tab-highlight" data-category="football">
-          <span class="tab-icon">⚽</span>
-          <span class="tab-label">Football Major Tournaments</span>
-          <span class="tab-badge-accent">UK & Europe</span>
-        </button>
-        <button class="nav-tab" data-category="radar">
-          <span class="tab-icon">🧠</span>
-          <span class="tab-label">Macro Alpha Radar</span>
-        </button>
-        <button class="nav-tab" data-category="calculator">
-          <span class="tab-icon">🧮</span>
-          <span class="tab-label">Kelly Sizer</span>
-        </button>
+  <nav class="main-tabs-nav">
+    <div class="tab-list">
+      <button class="tab-btn active" data-tab="tab-us-stocks">
+        <span>🇺🇸</span>
+        <span>TOP 20 US STOCKS</span>
+        <span class="tab-pill accent">Macro Ranked</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-uk-stocks">
+        <span>🇬🇧</span>
+        <span>TOP 20 UK STOCKS</span>
+        <span class="tab-pill highlight">To Invest Into</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-high-risers">
+        <span>🚀</span>
+        <span>HIGH RISERS</span>
+        <span class="tab-pill gain">High Growth</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-news-wire">
+        <span>📰</span>
+        <span>YAHOO FINANCE NEWS WIRE</span>
+        <span class="tab-pill accent">Live Feed</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-sectors">
+        <span>📊</span>
+        <span>SECTOR HEATMAP & MACRO</span>
+      </button>
+    </div>
+
+    <!-- Quick Asset Anchor Jump Links -->
+    <div class="quick-jump-container">
+      <span class="jump-title">QUICK JUMP:</span>
+      <div class="jump-links">
+        <a href="javascript:void(0)" onclick="switchStockView('us', 'NVDA')" class="jump-chip" style="color:#00ff88; border-color:rgba(0,255,136,0.3);">NVDA (NVIDIA)</a>
+        <a href="javascript:void(0)" onclick="switchStockView('us', 'PLTR')" class="jump-chip">PLTR (Palantir)</a>
+        <a href="javascript:void(0)" onclick="switchStockView('uk', 'RR.L')" class="jump-chip" style="color:#38bdf8; border-color:rgba(56,189,248,0.3);">RR.L (Rolls-Royce)</a>
+        <a href="javascript:void(0)" onclick="switchStockView('uk', 'AZN.L')" class="jump-chip">AZN.L (AstraZeneca)</a>
+        <a href="javascript:void(0)" onclick="switchStockView('risers', 'APP')" class="jump-chip" style="color:#fbbf24; border-color:rgba(251,191,36,0.3);">APP (AppLovin)</a>
+        <a href="javascript:void(0)" onclick="switchStockView('risers', 'MSTR')" class="jump-chip">MSTR (MicroStrategy)</a>
+        <a href="javascript:void(0)" onclick="switchStockView('us', 'CEG')" class="jump-chip">CEG (Constellation)</a>
+        <a href="javascript:void(0)" onclick="switchStockView('us', 'VRT')" class="jump-chip">VRT (Vertiv)</a>
       </div>
     </div>
   </nav>
 
-  <!-- Secondary Context Bar: Football Tournaments Sub-Nav & Controls -->
-  <section class="context-bar" id="context-bar">
-    <div class="context-container">
-      
-      <!-- Football Sub-Nav Pills (Shown when in Football tab) -->
-      <div class="football-subnav" id="football-subnav" style="display: none;">
-        <span class="subnav-title">Select Tournament:</span>
-        <div class="subnav-pills">
-          <button class="subnav-pill active" data-sub="premier_league">
-            <span class="pill-flag">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span> Premier League (UK)
-          </button>
-          <button class="subnav-pill" data-sub="la_liga">
-            <span class="pill-flag">🇪🇸</span> La Liga (Spain)
-          </button>
-          <button class="subnav-pill" data-sub="bundesliga">
-            <span class="pill-flag">🇩🇪</span> Bundesliga (Germany)
-          </button>
-          <button class="subnav-pill" data-sub="all_football">
-            <span class="pill-flag">📊</span> All 3 Tournaments (30 Markets)
-          </button>
+  <!-- Main Container -->
+  <main class="terminal-body">
+
+    <!-- ========================================== -->
+    <!-- TAB 1: TOP 20 US STOCKS (MACRO STRATEGY)   -->
+    <!-- ========================================== -->
+    <section id="tab-us-stocks" class="tab-content active">
+      <!-- Strategy Hero Banner -->
+      <div class="stock-hero-banner">
+        <div class="stock-hero-top">
+          <div class="stock-hero-title-area">
+            <h2>
+              <span>🇺🇸</span> TOP 20 US STOCKS // INSTITUTIONAL MACRO NEWS STRATEGY
+            </h2>
+            <p class="stock-hero-subtitle">
+              Continuous algorithmic scanning of 1,480+ internet news wires, SEC 13F whale filings, Federal Reserve policy sensitivity, and earnings transcripts.
+              Systematically ranked by <strong>Macro Transmission Power, Institutional Order Flow, Yield Sensitivity, and Catalytic Momentum</strong> with live quotes synced from <strong>Yahoo Finance API</strong>.
+            </p>
+          </div>
+          <div class="stock-hero-stats">
+            <div class="stock-hero-stat-box">
+              <div class="stat-label">LIVE DATA SOURCE</div>
+              <div class="stat-val">Yahoo Finance v8</div>
+            </div>
+            <div class="stock-hero-stat-box">
+              <div class="stat-label">AVG TARGET UPSIDE</div>
+              <div class="stat-val positive">+24.8%</div>
+            </div>
+            <div class="stock-hero-stat-box">
+              <div class="stat-label">MACRO REGIME</div>
+              <div class="stat-val">AI CAPEX EXPANSION</div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Timeframe Toggle: Day / Week / Month -->
-      <div class="timeframe-toggle-cluster" id="timeframe-toggle-cluster">
-        <span class="cluster-label">TIMEFRAME:</span>
-        <div class="segmented-control" role="group" aria-label="Market Timeframe">
-          <button class="segment-btn active" data-timeframe="day">
-            <span class="segment-icon">🕒</span>
-            <span class="segment-text">DAY (24H)</span>
-          </button>
-          <button class="segment-btn" data-timeframe="week">
-            <span class="segment-icon">📅</span>
-            <span class="segment-text">WEEK (7D)</span>
-          </button>
-          <button class="segment-btn" data-timeframe="month">
-            <span class="segment-icon">🗓️</span>
-            <span class="segment-text">MONTH (30D)</span>
-          </button>
+      <!-- Sections for Top Stocks of the Week, Month, and Year -->
+      <div class="timeframe-section-wrapper">
+        <div class="section-header-cluster">
+          <div class="section-header-title">
+            <span>🏆</span> MULTI-TIMEFRAME LEADERBOARDS: TOP US STOCKS OF THE WEEK, MONTH & YEAR
+          </div>
+          <span class="section-header-badge">LIVE YAHOO FINANCE DATA</span>
+        </div>
+
+        <div class="timeframe-showcase-grid">
+          <!-- Top of the Week -->
+          <div class="timeframe-card card-week">
+            <div class="timeframe-card-header">
+              <div class="timeframe-tag tag-week">
+                <span>⚡</span> TOP OF THE WEEK (5-DAY VELOCITY)
+              </div>
+              <span class="timeframe-sub">Breaking Catalyst Momentum</span>
+            </div>
+            <div class="timeframe-card-list" id="us-top-week-list">
+              <!-- Rendered via app.js -->
+            </div>
+          </div>
+
+          <!-- Top of the Month -->
+          <div class="timeframe-card card-month">
+            <div class="timeframe-card-header">
+              <div class="timeframe-tag tag-month">
+                <span>🚀</span> TOP OF THE MONTH (30-DAY DRIFT)
+              </div>
+              <span class="timeframe-sub">Earnings & Macro Revision</span>
+            </div>
+            <div class="timeframe-card-list" id="us-top-month-list">
+              <!-- Rendered via app.js -->
+            </div>
+          </div>
+
+          <!-- Top of the Year -->
+          <div class="timeframe-card card-year">
+            <div class="timeframe-card-header">
+              <div class="timeframe-tag tag-year">
+                <span>👑</span> TOP OF THE YEAR (YTD COMPOUNDERS)
+              </div>
+              <span class="timeframe-sub">Secular Macro Hegemony</span>
+            </div>
+            <div class="timeframe-card-list" id="us-top-year-list">
+              <!-- Rendered via app.js -->
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Quick Search & Recommendation Filters -->
-      <div class="filter-controls">
-        <div class="search-box">
-          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-          <input type="text" id="market-search-input" placeholder="Search 210 live markets, assets, teams..." autocomplete="off">
-          <button id="clear-search-btn" class="clear-search-btn" style="display: none;">&times;</button>
+      <!-- Interactive Filter & Search Toolbar -->
+      <div class="stock-toolbar">
+        <div class="toolbar-left">
+          <div class="timeframe-filter-chips">
+            <button class="tf-filter-chip active" data-timeframe="all" onclick="filterUsStocks('timeframe', 'all', this)">⭐ All Top 20</button>
+            <button class="tf-filter-chip" data-timeframe="week" onclick="filterUsStocks('timeframe', 'week', this)">⚡ Top of Week</button>
+            <button class="tf-filter-chip" data-timeframe="month" onclick="filterUsStocks('timeframe', 'month', this)">🚀 Top of Month</button>
+            <button class="tf-filter-chip" data-timeframe="year" onclick="filterUsStocks('timeframe', 'year', this)">👑 Top of Year</button>
+          </div>
+
+          <div class="industry-filter-wrap">
+            <select id="us-industry-select" onchange="filterUsStocks('industry', this.value)">
+              <option value="ALL">🌐 All Industries & Sectors</option>
+              <option value="Semiconductors & AI">⚡ Semiconductors & AI Hardware</option>
+              <option value="Enterprise AI & Software">💻 Enterprise AI & Software Analytics</option>
+              <option value="Cloud Computing & Infrastructure">☁️ Cloud Computing & Infrastructure</option>
+              <option value="Aerospace & Defense">🛡️ Aerospace & Defense</option>
+              <option value="Energy & Power Infrastructure">⚡ Nuclear Energy & Power Infrastructure</option>
+              <option value="Biopharmaceuticals">🧬 Biopharmaceuticals & GLP-1</option>
+              <option value="Financials & Banking">🏛️ Financials & Mega-Bank Capital</option>
+            </select>
+          </div>
         </div>
 
-        <div class="filter-pills-row">
-          <button class="filter-pill active" data-filter="all">All</button>
-          <button class="filter-pill" data-filter="high-conviction">High Conviction (85%+)</button>
-          <button class="filter-pill" data-filter="buy-yes">BET YES</button>
-          <button class="filter-pill" data-filter="buy-no">BET NO</button>
-          <button class="filter-pill" data-filter="high-ev">+12% EV+</button>
+        <div class="toolbar-right">
+          <div class="stock-search-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="us-stock-search" class="stock-search-input" placeholder="Search US stock, ticker, industry..." oninput="filterUsStocks('search', this.value)">
+          </div>
+
+          <div class="view-toggle-group">
+            <button class="view-btn active" id="us-view-table-btn" onclick="setStockViewMode('us', 'table')">TABLE</button>
+            <button class="view-btn" id="us-view-cards-btn" onclick="setStockViewMode('us', 'cards')">CARDS</button>
+          </div>
         </div>
       </div>
 
-    </div>
-  </section>
+      <!-- Top 20 Table View -->
+      <div class="stock-table-container" id="us-stocks-table-view">
+        <table class="stock-terminal-table">
+          <thead>
+            <tr>
+              <th style="width: 50px;">RANK</th>
+              <th>TICKER & COMPANY</th>
+              <th>INDUSTRY</th>
+              <th>YAHOO LIVE PRICE</th>
+              <th>24H CHANGE</th>
+              <th>MACRO SCORE</th>
+              <th>INTERNET NEWS CATALYST & SIGNAL</th>
+              <th>HEDGE FUND TARGET</th>
+            </tr>
+          </thead>
+          <tbody id="us-stocks-table-body">
+            <!-- Rendered dynamically via app.js -->
+          </tbody>
+        </table>
+      </div>
 
-  <!-- Macro Hedge Fund Strategy Header Callout Banner -->
-  <section class="hedgefund-strategy-banner">
-    <div class="banner-inner">
-      <div class="strategy-badge">
-        <span class="pulse-indicator"></span>
-        <span>MACRO HEDGE FUND ENGINE</span>
+      <!-- Top 20 Cards View (Toggleable) -->
+      <div class="stock-cards-grid" id="us-stocks-cards-view" style="display: none;">
+        <!-- Rendered dynamically via app.js -->
       </div>
-      <div class="strategy-copy">
-        <p class="strategy-headline">
-          <strong>Live Market Transmission:</strong> Synthesizing real-time Polymarket order books, breaking news catalysts (Bloomberg, Reuters, FT, CoinDesk, Fabrizio Romano, Sky Sports), and social media sentiment (X, Reddit, Whale Wallet Sweeps) to advise users on optimal decision-making for every top 10 market.
-        </p>
-      </div>
-      <div class="strategy-stats-mini">
-        <span class="mini-tag">News Catalysts: <strong>Verified Live</strong></span>
-        <span class="mini-tag">Whale Tracking: <strong>Active</strong></span>
-        <span class="mini-tag">Live Ticks: <strong>Auto-Sync</strong></span>
-      </div>
-    </div>
-  </section>
-
-  <!-- Primary Main App Content Area -->
-  <main class="main-content-layout">
-    
-    <!-- Section Title & Meta Bar -->
-    <div class="section-title-bar">
-      <div class="title-left">
-        <h2 id="current-section-title" class="current-section-title">Polymarket Top 10 Markets</h2>
-        <span id="current-section-desc" class="current-section-desc">Highest volume markets ranked by institutional liquidity & hedge fund conviction</span>
-      </div>
-      <div class="title-right">
-        <span class="result-count-chip" id="result-count-chip">Showing 10 of 10 Markets</span>
-        <button id="btn-export-brief" class="btn-ghost-blue" title="Download Macro Briefing">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
-          </svg>
-          Export Alpha CSV
-        </button>
-      </div>
-    </div>
-
-    <!-- Dynamic Market Cards Grid Container -->
-    <div class="market-cards-grid" id="market-cards-grid">
-      <!-- Populated dynamically via app.js -->
-      <div class="loading-state-card">
-        <div class="spinner-blue"></div>
-        <p>Connecting to Live Polymarket Stream & Macro Alpha Engine...</p>
-      </div>
-    </div>
-
-    <!-- Macro Alpha Radar View (Shown when Radar tab selected) -->
-    <section class="radar-view-container" id="radar-view-container" style="display: none;">
-      <!-- Populated dynamically via app.js -->
     </section>
 
-    <!-- Kelly Sizer View (Shown when Calculator tab selected) -->
-    <section class="calculator-view-container" id="calculator-view-container" style="display: none;">
-      <!-- Populated dynamically via app.js -->
+    <!-- ========================================== -->
+    <!-- TAB 2: TOP 20 UK STOCKS (TO INVEST INTO)   -->
+    <!-- ========================================== -->
+    <section id="tab-uk-stocks" class="tab-content">
+      <!-- Strategy Hero Banner -->
+      <div class="stock-hero-banner uk-hero">
+        <div class="stock-hero-top">
+          <div class="stock-hero-title-area">
+            <h2>
+              <span>🇬🇧</span> TOP 20 UK STOCKS // INSTITUTIONAL FTSE ALLOCATION
+            </h2>
+            <p class="stock-hero-subtitle">
+              High-conviction UK equities to invest into, scanned across London market syndicates, Bank of England rate transmission models, 
+              global defense orders, and commodity arbitrage. Dual pricing in pence (GBX) and pounds (£) synced directly from <strong>Yahoo Finance API</strong>.
+            </p>
+          </div>
+          <div class="stock-hero-stats">
+            <div class="stock-hero-stat-box">
+              <div class="stat-label">COVERAGE</div>
+              <div class="stat-val">20 UK Leaders</div>
+            </div>
+            <div class="stock-hero-stat-box">
+              <div class="stat-label">AVG DIVIDEND YIELD</div>
+              <div class="stat-val positive">3.65%</div>
+            </div>
+            <div class="stock-hero-stat-box">
+              <div class="stat-label">AVG TARGET UPSIDE</div>
+              <div class="stat-val positive">+19.4%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- UK Sections for Top Stocks of the Week, Month, and Year -->
+      <div class="timeframe-section-wrapper">
+        <div class="section-header-cluster">
+          <div class="section-header-title">
+            <span>🏆</span> MULTI-TIMEFRAME LEADERBOARDS: TOP UK STOCKS OF THE WEEK, MONTH & YEAR
+          </div>
+          <span class="section-header-badge">LIVE UK MARKET DATA (YAHOO)</span>
+        </div>
+
+        <div class="timeframe-showcase-grid">
+          <!-- Top of the Week -->
+          <div class="timeframe-card card-week">
+            <div class="timeframe-card-header">
+              <div class="timeframe-tag tag-week">
+                <span>⚡</span> TOP UK OF THE WEEK
+              </div>
+              <span class="timeframe-sub">5-Day Sterling Momentum</span>
+            </div>
+            <div class="timeframe-card-list" id="uk-top-week-list">
+              <!-- Rendered via app.js -->
+            </div>
+          </div>
+
+          <!-- Top of the Month -->
+          <div class="timeframe-card card-month">
+            <div class="timeframe-card-header">
+              <div class="timeframe-tag tag-month">
+                <span>🚀</span> TOP UK OF THE MONTH
+              </div>
+              <span class="timeframe-sub">30-Day Inflow Velocity</span>
+            </div>
+            <div class="timeframe-card-list" id="uk-top-month-list">
+              <!-- Rendered via app.js -->
+            </div>
+          </div>
+
+          <!-- Top of the Year -->
+          <div class="timeframe-card card-year">
+            <div class="timeframe-card-header">
+              <div class="timeframe-tag tag-year">
+                <span>👑</span> TOP UK OF THE YEAR
+              </div>
+              <span class="timeframe-sub">YTD Dividend & Capital Growth</span>
+            </div>
+            <div class="timeframe-card-list" id="uk-top-year-list">
+              <!-- Rendered via app.js -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- UK Toolbar -->
+      <div class="stock-toolbar">
+        <div class="toolbar-left">
+          <div class="timeframe-filter-chips">
+            <button class="tf-filter-chip active" data-timeframe="all" onclick="filterUkStocks('timeframe', 'all', this)">⭐ All Top 20</button>
+            <button class="tf-filter-chip" data-timeframe="week" onclick="filterUkStocks('timeframe', 'week', this)">⚡ Top of Week</button>
+            <button class="tf-filter-chip" data-timeframe="month" onclick="filterUkStocks('timeframe', 'month', this)">🚀 Top of Month</button>
+            <button class="tf-filter-chip" data-timeframe="year" onclick="filterUkStocks('timeframe', 'year', this)">👑 Top of Year</button>
+          </div>
+
+          <div class="industry-filter-wrap">
+            <select id="uk-industry-select" onchange="filterUkStocks('industry', this.value)">
+              <option value="ALL">🌐 All UK Industries</option>
+              <option value="Aerospace & Defense">🛡️ Aerospace & Defense</option>
+              <option value="Biopharmaceuticals">🧬 Biopharmaceuticals & Vaccines</option>
+              <option value="Energy & LNG Infrastructure">🛢️ Integrated Oil, Gas & LNG</option>
+              <option value="Semiconductor IP & Architecture">⚡ Semiconductor IP Architecture</option>
+              <option value="Financials & Banking">🏛️ Financials & Global Banking</option>
+              <option value="Mining & Critical Metals">⛏️ Mining & Green Metals</option>
+              <option value="Information Analytics & Data">📊 Enterprise Data Analytics</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="toolbar-right">
+          <div class="stock-search-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="uk-stock-search" class="stock-search-input" placeholder="Search UK stock, ticker, industry..." oninput="filterUkStocks('search', this.value)">
+          </div>
+
+          <div class="view-toggle-group">
+            <button class="view-btn active" id="uk-view-table-btn" onclick="setStockViewMode('uk', 'table')">TABLE</button>
+            <button class="view-btn" id="uk-view-cards-btn" onclick="setStockViewMode('uk', 'cards')">CARDS</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- UK Table View -->
+      <div class="stock-table-container" id="uk-stocks-table-view">
+        <table class="stock-terminal-table">
+          <thead>
+            <tr>
+              <th style="width: 50px;">RANK</th>
+              <th>TICKER & COMPANY</th>
+              <th>INDUSTRY</th>
+              <th>YAHOO LIVE PRICE (GBX / £)</th>
+              <th>24H CHANGE</th>
+              <th>MACRO SCORE</th>
+              <th>DIV YIELD</th>
+              <th>INTERNET NEWS CATALYST & SIGNAL</th>
+              <th>HEDGE FUND TARGET</th>
+            </tr>
+          </thead>
+          <tbody id="uk-stocks-table-body">
+            <!-- Rendered dynamically via app.js -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- UK Cards View -->
+      <div class="stock-cards-grid" id="uk-stocks-cards-view" style="display: none;">
+        <!-- Rendered dynamically via app.js -->
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: HIGH RISERS (EXPLOSIVE GROWTH)      -->
+    <!-- ========================================== -->
+    <section id="tab-high-risers" class="tab-content">
+      <!-- Strategy Hero Banner -->
+      <div class="stock-hero-banner high-riser-hero">
+        <div class="stock-hero-top">
+          <div class="stock-hero-title-area">
+            <h2>
+              <span>🚀</span> HIGH RISERS // RAPID VALUE ACCELERATION RADAR
+            </h2>
+            <p class="stock-hero-subtitle">
+              High-growth breakout equities exhibiting triple-digit YoY revenue expansion, exponential order backlogs, rising enterprise value, 
+              and institutional volume accumulation velocity. Live price changes and volume metrics synced from <strong>Yahoo Finance API</strong>.
+            </p>
+          </div>
+          <div class="stock-hero-stats">
+            <div class="stock-hero-stat-box">
+              <div class="stat-label">AVG YOY REVENUE GROWTH</div>
+              <div class="stat-val positive">+78.4%</div>
+            </div>
+            <div class="stock-hero-stat-box">
+              <div class="stat-label">AVG 1-YEAR RETURN</div>
+              <div class="stat-val positive">+214.5%</div>
+            </div>
+            <div class="stock-hero-stat-box">
+              <div class="stat-label">MOMENTUM VELOCITY</div>
+              <div class="stat-val">MAXIMUM EXPANSION</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- High Risers Timeframe Leaderboards -->
+      <div class="timeframe-section-wrapper">
+        <div class="section-header-cluster">
+          <div class="section-header-title">
+            <span>⚡</span> HIGH RISERS MULTI-TIMEFRAME SHOWCASE: WEEK, MONTH & YEAR GAINERS
+          </div>
+          <span class="section-header-badge">MAXIMUM GROWTH SURGE</span>
+        </div>
+
+        <div class="timeframe-showcase-grid">
+          <!-- Top Risers of the Week -->
+          <div class="timeframe-card card-week">
+            <div class="timeframe-card-header">
+              <div class="timeframe-tag tag-week">
+                <span>⚡</span> FASTEST RISERS OF THE WEEK
+              </div>
+              <span class="timeframe-sub">5-Day Breakout Surge</span>
+            </div>
+            <div class="timeframe-card-list" id="risers-top-week-list">
+              <!-- Rendered via app.js -->
+            </div>
+          </div>
+
+          <!-- Top Risers of the Month -->
+          <div class="timeframe-card card-month">
+            <div class="timeframe-card-header">
+              <div class="timeframe-tag tag-month">
+                <span>🚀</span> FASTEST RISERS OF THE MONTH
+              </div>
+              <span class="timeframe-sub">30-Day Growth Acceleration</span>
+            </div>
+            <div class="timeframe-card-list" id="risers-top-month-list">
+              <!-- Rendered via app.js -->
+            </div>
+          </div>
+
+          <!-- Top Risers of the Year -->
+          <div class="timeframe-card card-year">
+            <div class="timeframe-card-header">
+              <div class="timeframe-tag tag-year">
+                <span>👑</span> FASTEST RISERS OF THE YEAR
+              </div>
+              <span class="timeframe-sub">YTD High-Value Champions</span>
+            </div>
+            <div class="timeframe-card-list" id="risers-top-year-list">
+              <!-- Rendered via app.js -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- High Risers Toolbar -->
+      <div class="stock-toolbar">
+        <div class="toolbar-left">
+          <div class="timeframe-filter-chips">
+            <button class="tf-filter-chip active" data-timeframe="all" onclick="filterRisers('timeframe', 'all', this)">⭐ All High Risers</button>
+            <button class="tf-filter-chip" data-timeframe="week" onclick="filterRisers('timeframe', 'week', this)">⚡ Top of Week</button>
+            <button class="tf-filter-chip" data-timeframe="month" onclick="filterRisers('timeframe', 'month', this)">🚀 Top of Month</button>
+            <button class="tf-filter-chip" data-timeframe="year" onclick="filterRisers('timeframe', 'year', this)">👑 Top of Year</button>
+          </div>
+
+          <div class="industry-filter-wrap">
+            <select id="risers-industry-select" onchange="filterRisers('industry', this.value)">
+              <option value="ALL">🌐 All High Growth Industries</option>
+              <option value="AI & Enterprise Software">💻 AI & Enterprise Software</option>
+              <option value="Semiconductors & Connectivity">⚡ Semiconductors & Connectivity</option>
+              <option value="AI Liquid Cooling & Infrastructure">❄️ AI Liquid Cooling & Power</option>
+              <option value="Quantum & Advanced Compute">⚛️ Quantum Computing & Deep Tech</option>
+              <option value="Space Launch & Aerospace">🚀 Commercial Space & Satellites</option>
+              <option value="Bitcoin Treasury & Digital Assets">🪙 Bitcoin Treasury Reserves</option>
+              <option value="Biotech & GLP-1 Therapeutics">🧬 Biotech & Obesity GLP-1</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="toolbar-right">
+          <div class="stock-search-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="risers-stock-search" class="stock-search-input" placeholder="Search high risers..." oninput="filterRisers('search', this.value)">
+          </div>
+
+          <div class="view-toggle-group">
+            <button class="view-btn active" id="risers-view-table-btn" onclick="setStockViewMode('risers', 'table')">TABLE</button>
+            <button class="view-btn" id="risers-view-cards-btn" onclick="setStockViewMode('risers', 'cards')">CARDS</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- High Risers Table View -->
+      <div class="stock-table-container" id="risers-stocks-table-view">
+        <table class="stock-terminal-table">
+          <thead>
+            <tr>
+              <th style="width: 50px;">RANK</th>
+              <th>TICKER & COMPANY</th>
+              <th>INDUSTRY</th>
+              <th>YAHOO LIVE PRICE</th>
+              <th>YOY REV GROWTH</th>
+              <th>1-WEEK MOVE</th>
+              <th>1-MONTH MOVE</th>
+              <th>1-YEAR MOVE</th>
+              <th>VOL SURGE</th>
+              <th>RISING VALUE DRIVER & CATALYST</th>
+            </tr>
+          </thead>
+          <tbody id="risers-stocks-table-body">
+            <!-- Rendered dynamically via app.js -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- High Risers Cards View -->
+      <div class="stock-cards-grid" id="risers-stocks-cards-view" style="display: none;">
+        <!-- Rendered dynamically via app.js -->
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: YAHOO FINANCE EQUITIES NEWS WIRE    -->
+    <!-- ========================================== -->
+    <section id="tab-news-wire" class="tab-content">
+      <div class="stock-hero-banner" style="border-left-color: #00f2fe;">
+        <div class="stock-hero-top">
+          <div class="stock-hero-title-area">
+            <h2>
+              <span>📰</span> YAHOO FINANCE LIVE EQUITIES NEWS WIRE
+            </h2>
+            <p class="stock-hero-subtitle">
+              Direct, real-time syndication of verified breaking stock news, earnings announcements, analyst ratings revisions, and SEC regulatory filings from <strong>Yahoo Finance API</strong>.
+            </p>
+          </div>
+          <div class="stock-hero-stats">
+            <div class="stock-hero-stat-box">
+              <div class="stat-label">FEED SOURCE</div>
+              <div class="stat-val">Yahoo Finance RSS</div>
+            </div>
+            <div class="stock-hero-stat-box">
+              <div class="stat-label">LIVE FEED STATUS</div>
+              <div class="stat-val positive">REAL-TIME ACTIVE</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="news-wire-toolbar">
+        <div class="toolbar-left">
+          <div class="timeframe-filter-chips">
+            <button class="tf-filter-chip active" onclick="filterNews('ALL', this)">All Stock News</button>
+            <button class="tf-filter-chip" onclick="filterNews('NVDA', this)">NVDA</button>
+            <button class="tf-filter-chip" onclick="filterNews('PLTR', this)">PLTR</button>
+            <button class="tf-filter-chip" onclick="filterNews('MSFT', this)">MSFT</button>
+            <button class="tf-filter-chip" onclick="filterNews('AAPL', this)">AAPL</button>
+            <button class="tf-filter-chip" onclick="filterNews('TSLA', this)">TSLA</button>
+            <button class="tf-filter-chip" onclick="filterNews('RR.L', this)">RR.L</button>
+          </div>
+        </div>
+        <div class="toolbar-right">
+          <div class="stock-search-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="news-search-input" class="stock-search-input" placeholder="Search Yahoo stock news..." oninput="searchNews(this.value)">
+          </div>
+        </div>
+      </div>
+
+      <div class="news-cards-grid" id="yahoo-news-cards-container">
+        <!-- Rendered dynamically via app.js -->
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 5: SECTOR PERFORMANCE & MACRO MATRIX   -->
+    <!-- ========================================== -->
+    <section id="tab-sectors" class="tab-content">
+      <div class="stock-hero-banner" style="border-left-color: #fbbf24;">
+        <div class="stock-hero-top">
+          <div class="stock-hero-title-area">
+            <h2>
+              <span>📊</span> STOCK MARKET SECTOR PERFORMANCE & MACRO REGIMES
+            </h2>
+            <p class="stock-hero-subtitle">
+              Cross-sector institutional capital flow breakdown across S&P 500 and FTSE 100 industries. Tracks leading market leaders, rotational velocity, and relative strength index (RSI).
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="sector-heatmap-grid" id="sector-heatmap-container">
+        <!-- Rendered via app.js -->
+      </div>
     </section>
 
   </main>
 
-  <!-- Interactive Market Detail Modal / Order Book Deep Dive -->
-  <div class="modal-backdrop" id="market-modal-backdrop" style="display: none;">
-    <div class="modal-window">
-      <div class="modal-header">
-        <div class="modal-header-info">
-          <span class="modal-badge-cat" id="modal-cat-badge">CATEGORY</span>
-          <span class="modal-badge-rank" id="modal-rank-badge">RANK #1</span>
-          <span class="modal-badge-tf" id="modal-tf-badge">DAY (24H)</span>
+  <!-- Notification Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Scanner Console Overlay Modal -->
+  <div id="scanner-console-modal" class="scanner-console-modal">
+    <div class="scanner-console-box">
+      <div class="scanner-console-header">
+        <div class="console-title">
+          <svg class="icon-spin active" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+          </svg>
+          <span>YAHOO FINANCE API (v8) // REAL-TIME EQUITIES INGESTION ENGINE</span>
         </div>
-        <button class="modal-close-btn" id="modal-close-btn">&times;</button>
+        <button class="console-close-btn" onclick="closeScannerModal()">&times;</button>
       </div>
-      <div class="modal-body" id="modal-body-content">
-        <!-- Rendered dynamically -->
+      <div class="scanner-console-body" id="scanner-console-body">
+        <!-- Live logs injected dynamically -->
+      </div>
+      <div class="scanner-progress-bar-wrap">
+        <div class="scanner-progress-bar">
+          <div id="scanner-progress-fill" class="scanner-progress-fill"></div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Watchlist Sidebar Drawer -->
-  <aside class="watchlist-drawer" id="watchlist-drawer">
-    <div class="drawer-header">
-      <div class="drawer-title-row">
-        <h3>Institutional Watchlist</h3>
-        <span class="drawer-badge" id="drawer-count-badge">0 Markets</span>
-      </div>
-      <button class="drawer-close-btn" id="drawer-close-btn">&times;</button>
+  <!-- Footer (100% Equities Focus) -->
+  <footer class="terminal-footer">
+    <div class="footer-left">
+      <span class="footer-status-dot"></span>
+      <span>FEED: YAHOO FINANCE LIVE API (v8)</span>
+      <span class="divider">|</span>
+      <span>EQUITIES COVERAGE: TOP 20 US STOCKS, TOP 20 UK STOCKS, HIGH RISERS</span>
+      <span class="divider">|</span>
+      <span>STRATEGY: MACRO HEDGE FUND NEWS TRANSMISSION</span>
     </div>
-    <div class="drawer-content" id="watchlist-drawer-content">
-      <div class="empty-watchlist">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="1.5">
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-        </svg>
-        <p>Your watchlist is empty.</p>
-        <span>Click the star icon on any Polymarket card to track macro advisories and price shifts.</span>
-      </div>
-    </div>
-  </aside>
-
-  <!-- Prominent Executive Footer (With User Required Signature) -->
-  <footer class="app-footer">
-    <div class="footer-container">
-      
-      <!-- Primary Required Signature Callout -->
-      <div class="footer-signature-banner">
-        <div class="signature-icon-ring">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          </svg>
-        </div>
-        <div class="signature-text-cluster">
-          <h3 class="signature-main-text">KPOINT made this one. Not financial advice the risk is yours and yours only.</h3>
-          <p class="signature-sub-text">
-            Proprietary Macro Hedge Fund Transmission Architecture // Live Polymarket Gamma Protocol // Real-Time News Catalyst & Social Media Sentiment Aggregator
-          </p>
-        </div>
-        <div class="signature-verification-badge">
-          <span class="verify-check">✓</span>
-          <span>OFFICIAL KPOINT BUILD</span>
-        </div>
-      </div>
-
-      <!-- Footer Informational Columns -->
-      <div class="footer-grid">
-        <div class="footer-col">
-          <div class="footer-brand">
-            <span class="footer-logo">KPOINT</span>
-            <span class="footer-sub">POLYMARKET ALPHA</span>
-          </div>
-          <p class="footer-desc">
-            Empowering sharp prediction market traders with institutional hedge fund risk frameworks, real-time news catalysis, whale tracking, and expected value arbitrage.
-          </p>
-          <div class="footer-live-badge">
-            <span class="dot-online"></span> All 7 Sectors Streaming Live
-          </div>
-        </div>
-
-        <div class="footer-col">
-          <h4 class="footer-col-title">Market Categories</h4>
-          <ul class="footer-links-list">
-            <li><a href="#" class="footer-cat-link" data-cat="politics">🏛️ Politics (Day, Week, Month)</a></li>
-            <li><a href="#" class="footer-cat-link" data-cat="finance">💰 Finance (Day, Week, Month)</a></li>
-            <li><a href="#" class="footer-cat-link" data-cat="crypto">🪙 Crypto (Day, Week, Month)</a></li>
-            <li><a href="#" class="footer-cat-link" data-cat="sport">🏆 Sport (Day, Week, Month)</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-col">
-          <h4 class="footer-col-title">Major Football Tournaments</h4>
-          <ul class="footer-links-list">
-            <li><a href="#" class="footer-football-link" data-sub="premier_league">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League (UK) - Top 10</a></li>
-            <li><a href="#" class="footer-football-link" data-sub="la_liga">🇪🇸 La Liga (Spain) - Top 10</a></li>
-            <li><a href="#" class="footer-football-link" data-sub="bundesliga">🇩🇪 Bundesliga (Germany) - Top 10</a></li>
-            <li><a href="#" class="footer-cat-link" data-cat="radar">🧠 Macro Alpha Radar Matrix</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-col">
-          <h4 class="footer-col-title">Risk & Strategy Disclosure</h4>
-          <p class="footer-disclosure">
-            Prediction markets are decentralized probabilistic contracts. Probabilities fluctuate with real-time liquidity and news events. Expected value (EV+) calculations and recommendations are derived from statistical hedge fund models and public sentiment metrics. Trade responsibly.
-          </p>
-          <div class="footer-timestamp">
-            System Timestamp: <span id="footer-live-timestamp">2026-11-04 02:30 UTC</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Bottom Trademark & Copyright Line -->
-      <div class="footer-bottom-bar">
-        <div class="footer-copy">
-          &copy; 2026 KPOINT Macro Intelligence. All rights reserved.
-        </div>
-        <div class="footer-signature-repeat">
-          "KPOINT made this one. Not financial advice the risk is yours and yours only."
-        </div>
-      </div>
-
+    <div class="footer-right">
+      <span>QUANTO EQUITIES // PITCH BLACK HEDGE FUND TERMINAL</span>
     </div>
   </footer>
 
-  <!-- Scripts -->
   <script src="app.js"></script>
 </body>
 </html>

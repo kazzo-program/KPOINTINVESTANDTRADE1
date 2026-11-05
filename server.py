@@ -1,229 +1,272 @@
 #!/usr/bin/env python3
 """
-KPOINT POLYMARKET MACRO ALPHA TERMINAL - BACKEND SERVER
-High-Performance Prediction Market Institutional Intelligence Server
-With Direct Polymarket Gamma API Live Sync (No API Keys Required)
+QUANTO EQUITIES // INSTITUTIONAL HEDGE FUND STOCK TERMINAL
+100% Stock-Focused Backend Server with Real-Time Yahoo Finance API Integration
 
-Serves:
-- Blue & White Terminal Web UI (index.html, styles.css, app.js)
-- Real-Time Polymarket Alpha Database (polymarket_data.json)
-- Institutional REST APIs:
-    * GET  /api/markets                      -> Full database (210 live markets)
-    * GET  /api/live-sync                    -> Force live sync from Polymarket Gamma API
-    * GET  /api/markets/<category>           -> Category markets (day, week, month)
-    * GET  /api/markets/<category>/<timeframe> -> Top 10 markets for specific timeframe
-    * GET  /api/market/<id>                  -> Single market detail & advisory
-    * GET  /api/macro-radar                  -> Aggregated hedge fund sentiment & whale flows
-    * GET  /api/top-conviction               -> Highest EV+ bets across all categories
-    * GET  /api/status                       -> Health status & server metrics
-    * POST /api/scan                         -> Trigger live macro hedge fund intelligence refresh
+Features:
+- Live Yahoo Finance Quote Ingestion (/api/yahoo/quotes)
+- Live Yahoo Finance Equities News Ingestion (/api/yahoo/news)
+- Complete coverage of Top 20 US Stocks, Top 20 UK Stocks, and High Risers
+- In-memory intelligent caching with TTL to prevent rate limiting
+- Zero external dependencies (uses standard library http.server, urllib, json, xml)
 """
 
 import sys
 import os
 import json
+import urllib.request
 import urllib.parse
+import xml.etree.ElementTree as ET
 from http.server import HTTPServer, SimpleHTTPRequestHandler
-from datetime import datetime, timezone
-import threading
+from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime
 import time
 
 PORT = 8080
 WORKSPACE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_FILE = os.path.join(WORKSPACE_DIR, "polymarket_data.json")
 
-# In-memory database cache
-POLYMARKET_DB = None
-LAST_SYNC_TIME = None
+# Caching storage
+QUOTES_CACHE = {}
+QUOTES_CACHE_TIMESTAMP = 0
+NEWS_CACHE = []
+NEWS_CACHE_TIMESTAMP = 0
+CACHE_TTL_SECONDS = 15
 
-def load_database():
-    """Load the complete Polymarket alpha database."""
-    global POLYMARKET_DB, LAST_SYNC_TIME
-    if os.path.exists(DATA_FILE):
-        try:
-            with open(DATA_FILE, "r", encoding="utf-8") as f:
-                POLYMARKET_DB = json.load(f)
-            LAST_SYNC_TIME = datetime.now(timezone.utc).isoformat()
-            print(f"[INFO] Successfully loaded Polymarket database ({POLYMARKET_DB['metadata']['totalMarkets']} markets).")
-        except Exception as e:
-            print(f"[ERROR] Failed to load {DATA_FILE}: {e}")
-            POLYMARKET_DB = {}
-    else:
-        trigger_live_sync()
+# Symbols coverage
+US_SYMBOLS = [
+    "NVDA", "MSFT", "PLTR", "AMZN", "AAPL", "META", "AVGO", "TSLA",
+    "LLY", "VRT", "CEG", "JPM", "BRK-B", "TSM", "GE", "LMT", "AMD",
+    "NOW", "XOM", "GOOGL"
+]
 
-def trigger_live_sync():
-    """Perform real-time sync with Polymarket Gamma API."""
-    global POLYMARKET_DB, LAST_SYNC_TIME
+UK_SYMBOLS = [
+    "RR.L", "AZN.L", "BA.L", "SHEL.L", "ARM", "BARC.L", "HSBA.L", "REL.L",
+    "RIO.L", "III.L", "LSEG.L", "ULVR.L", "GSK.L", "FLTR.L", "NXT.L",
+    "GLEN.L", "BP.L", "CPG.L", "AHT.L", "IHG.L"
+]
+
+RISER_SYMBOLS = [
+    "PLTR", "APP", "MSTR", "ALAB", "IONQ", "RKLB", "VRT", "NVDA",
+    "CEG", "HOOD", "VKTX", "CLS", "AXON", "NET", "SMCI", "ANET"
+]
+
+ALL_TRACKED_SYMBOLS = list(dict.fromkeys(US_SYMBOLS + UK_SYMBOLS + RISER_SYMBOLS))
+
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+    "Accept": "application/json, text/plain, */*",
+    "Accept-Language": "en-US,en;q=0.9"
+}
+
+def fetch_single_quote(symbol):
+    """Fetch live quote from Yahoo Finance v8 chart API."""
+    url = f"https://query1.finance.yahoo.com/v8/finance/chart/{urllib.parse.quote(symbol)}?interval=1d&range=5d"
     try:
-        import live_polymarket_engine
-        POLYMARKET_DB = live_polymarket_engine.sync_all_live_markets()
-        LAST_SYNC_TIME = datetime.now(timezone.utc).isoformat()
-        print("[LIVE SYNC] Successfully updated database with real Polymarket live events.")
-        return True
+        req = urllib.request.Request(url, headers=HEADERS)
+        with urllib.request.urlopen(req, timeout=4) as response:
+            data = json.loads(response.read().decode("utf-8"))
+            result = data.get("chart", {}).get("result", [])
+            if not result:
+                return None
+            meta = result[0].get("meta", {})
+            current_price = meta.get("regularMarketPrice")
+            prev_close = meta.get("chartPreviousClose") or meta.get("previousClose") or current_price
+            
+            if current_price is None:
+                return None
+                
+            change = current_price - prev_close if prev_close else 0.0
+            change_percent = (change / prev_close * 100.0) if prev_close else 0.0
+            
+            return {
+                "symbol": symbol,
+                "price": round(current_price, 2),
+                "previousClose": round(prev_close, 2) if prev_close else round(current_price, 2),
+                "change": round(change, 2),
+                "changePercent": round(change_percent, 2),
+                "dayHigh": round(meta.get("regularMarketDayHigh", current_price), 2),
+                "dayLow": round(meta.get("regularMarketDayLow", current_price), 2),
+                "volume": meta.get("regularMarketVolume", 0),
+                "currency": meta.get("currency", "USD"),
+                "exchange": meta.get("exchangeName", "US"),
+                "timestamp": datetime.utcnow().isoformat() + "Z"
+            }
     except Exception as e:
-        print(f"[WARN] Live sync error (falling back to cached data): {e}")
-        return False
+        return None
 
-class PolymarketAlphaHandler(SimpleHTTPRequestHandler):
+def fetch_all_quotes(symbols=None):
+    """Fetch quotes for symbols in parallel with intelligent caching."""
+    global QUOTES_CACHE, QUOTES_CACHE_TIMESTAMP
+    now = time.time()
+    
+    target_symbols = symbols or ALL_TRACKED_SYMBOLS
+    
+    # Return cache if still fresh and covers target symbols
+    if (now - QUOTES_CACHE_TIMESTAMP < CACHE_TTL_SECONDS) and all(s in QUOTES_CACHE for s in target_symbols):
+        return {s: QUOTES_CACHE[s] for s in target_symbols if s in QUOTES_CACHE}
+        
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        results = list(executor.map(fetch_single_quote, target_symbols))
+        
+    for res in results:
+        if res:
+            QUOTES_CACHE[res["symbol"]] = res
+            
+    QUOTES_CACHE_TIMESTAMP = now
+    return {s: QUOTES_CACHE[s] for s in target_symbols if s in QUOTES_CACHE}
+
+def fetch_yahoo_stock_news(symbols=None):
+    """Fetch real-time stock news from Yahoo Finance RSS feeds."""
+    global NEWS_CACHE, NEWS_CACHE_TIMESTAMP
+    now = time.time()
+    
+    if (now - NEWS_CACHE_TIMESTAMP < CACHE_TTL_SECONDS * 2) and NEWS_CACHE:
+        return NEWS_CACHE
+        
+    sample_symbols = "NVDA,MSFT,AAPL,PLTR,TSLA,AMZN,META,GOOGL,RR.L,AZN.L"
+    urls = [
+        f"https://feeds.finance.yahoo.com/rss/2.0/headline?s={sample_symbols}&region=US&lang=en-US",
+        "https://finance.yahoo.com/news/rssindex"
+    ]
+    
+    all_news = []
+    seen_titles = set()
+    
+    for url in urls:
+        try:
+            req = urllib.request.Request(url, headers=HEADERS)
+            with urllib.request.urlopen(req, timeout=4) as response:
+                xml_data = response.read()
+                root = ET.fromstring(xml_data)
+                for item in root.findall(".//item")[:15]:
+                    title = item.findtext("title", "").strip()
+                    link = item.findtext("link", "").strip()
+                    pub_date = item.findtext("pubDate", "").strip()
+                    desc = item.findtext("description", "").strip()
+                    
+                    if title and title not in seen_titles:
+                        seen_titles.add(title)
+                        
+                        # Tag relevant stock symbol
+                        matched_symbol = "GENERAL"
+                        for sym in ALL_TRACKED_SYMBOLS:
+                            if sym.replace(".L", "").lower() in title.lower() or sym.replace(".L", "").lower() in desc.lower():
+                                matched_symbol = sym
+                                break
+                                
+                        all_news.append({
+                            "source": "Yahoo Finance",
+                            "symbol": matched_symbol,
+                            "title": title,
+                            "url": link,
+                            "published": pub_date,
+                            "snippet": desc[:160] + "..." if len(desc) > 160 else desc,
+                            "sentiment": "BULLISH" if any(w in title.lower() for w in ["soars", "jumps", "rally", "high", "buy", "gain", "surges", "upgrade"]) else ("BEARISH" if any(w in title.lower() for w in ["falls", "drops", "slumps", "sell", "cuts", "crash"]) else "CATALYST")
+                        })
+        except Exception:
+            pass
+            
+    if all_news:
+        NEWS_CACHE = all_news
+        NEWS_CACHE_TIMESTAMP = now
+        
+    return NEWS_CACHE
+
+class StockTerminalHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=WORKSPACE_DIR, **kwargs)
 
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
-        path = parsed.path.rstrip("/")
-        query = urllib.parse.parse_qs(parsed.query)
+        params = urllib.parse.parse_qs(parsed.query)
 
-        # 1. API: Server Status
-        if path == "/api/status":
+        if parsed.path == "/api/status":
             self.send_json_response({
                 "status": "ONLINE",
-                "system": "KPOINT POLYMARKET MACRO ALPHA TERMINAL",
-                "theme": "BLUE_AND_WHITE",
-                "apiKeysRequired": False,
-                "apiNote": "Polymarket Gamma Markets API is 100% public; zero API keys required.",
-                "categories": ["politics", "crypto", "finance", "sport", "premier_league", "la_liga", "bundesliga"],
-                "totalMarkets": POLYMARKET_DB.get("metadata", {}).get("totalMarkets", 210) if POLYMARKET_DB else 0,
-                "lastSync": LAST_SYNC_TIME,
-                "timestamp": datetime.now(timezone.utc).isoformat(),
-                "signature": "KPOINT made this one. Not financial advice the risk is yours and yours only."
-            })
-            return
-
-        # 2. API: Live Force Sync (/api/live-sync)
-        if path == "/api/live-sync":
-            success = trigger_live_sync()
-            self.send_json_response({
-                "status": "success" if success else "cached",
-                "message": "Live Polymarket events refreshed from Gamma API.",
-                "totalMarkets": 210,
-                "lastSync": LAST_SYNC_TIME,
-                "apiKeysRequired": False
-            })
-            return
-
-        # 3. API: All Markets (Live Real-Time Payload)
-        if path == "/api/markets":
-            if POLYMARKET_DB and "metadata" in POLYMARKET_DB:
-                POLYMARKET_DB["metadata"]["liveTimestamp"] = datetime.now(timezone.utc).isoformat()
-                POLYMARKET_DB["metadata"]["serverStatus"] = "REAL_TIME_STREAMING_ACTIVE"
-            self.send_json_response(POLYMARKET_DB)
-            return
-
-        # 4. API: Top Conviction / Alpha Screener
-        if path == "/api/top-conviction":
-            top_bets = []
-            if POLYMARKET_DB:
-                for cat, timeframes in POLYMARKET_DB.items():
-                    if cat in ["metadata"]:
-                        continue
-                    if isinstance(timeframes, dict):
-                        for tf, markets in timeframes.items():
-                            for m in markets:
-                                adv = m.get("hedgeFundAdvisory", {})
-                                top_bets.append({
-                                    "id": m.get("id"),
-                                    "category": cat,
-                                    "timeframe": tf,
-                                    "title": m.get("title"),
-                                    "url": m.get("url"),
-                                    "volume": m.get("volume"),
-                                    "recommendation": adv.get("recommendation"),
-                                    "confidencePct": adv.get("confidencePct", 0),
-                                    "evEdge": adv.get("evEdge", ""),
-                                    "targetExit": adv.get("targetExit", ""),
-                                    "stopLoss": adv.get("stopLoss", ""),
-                                    "headline": adv.get("newsCatalyst", {}).get("headline", ""),
-                                    "sentimentScore": adv.get("socialMediaRadar", {}).get("sentimentScore", 0)
-                                })
-            top_bets.sort(key=lambda x: x.get("confidencePct", 0), reverse=True)
-            self.send_json_response({
-                "status": "success",
-                "count": len(top_bets),
-                "topConviction": top_bets[:15]
-            })
-            return
-
-        # 5. API: Macro Radar / Sentiment Matrix
-        if path == "/api/macro-radar":
-            self.send_json_response({
-                "status": "success",
-                "macroRegime": "AI CAPEX SUPERCYCLE & GLOBAL POLICY MONETARY TRANSMISSION",
-                "sentimentAverages": {
-                    "politics": 83.4,
-                    "crypto": 88.6,
-                    "finance": 85.2,
-                    "sport": 84.1,
-                    "premier_league": 84.8,
-                    "la_liga": 85.5,
-                    "bundesliga": 86.2
+                "engine": "QUANTO EQUITIES // YAHOO FINANCE LIVE FEED",
+                "coverage": {
+                    "total_stocks": len(ALL_TRACKED_SYMBOLS),
+                    "us_stocks": len(US_SYMBOLS),
+                    "uk_stocks": len(UK_SYMBOLS),
+                    "high_risers": len(RISER_SYMBOLS)
                 },
-                "whaleActivity24h": "$94,800,000 net institutional smart money volume",
-                "signature": "KPOINT made this one. Not financial advice the risk is yours and yours only."
+                "yahoo_api_sync": "CONNECTED",
+                "timestamp": datetime.utcnow().isoformat() + "Z",
+                "port": PORT
             })
             return
 
-        # 6. API: Category specific routes e.g. /api/markets/politics or /api/markets/politics/day
-        parts = path.split("/")
-        if len(parts) >= 4 and parts[1] == "api" and parts[2] == "markets":
-            cat = parts[3]
-            if POLYMARKET_DB and cat in POLYMARKET_DB:
-                if len(parts) == 4:
-                    self.send_json_response({
-                        "category": cat,
-                        "timeframes": POLYMARKET_DB[cat]
-                    })
-                    return
-                elif len(parts) == 5:
-                    tf = parts[4]
-                    if tf in POLYMARKET_DB[cat]:
-                        self.send_json_response({
-                            "category": cat,
-                            "timeframe": tf,
-                            "count": len(POLYMARKET_DB[cat][tf]),
-                            "markets": POLYMARKET_DB[cat][tf]
-                        })
-                        return
-
-        # 7. API: Single Market by ID e.g. /api/market/pol-d-01
-        if len(parts) == 4 and parts[1] == "api" and parts[2] == "market":
-            market_id = parts[3]
-            found = None
-            if POLYMARKET_DB:
-                for cat, timeframes in POLYMARKET_DB.items():
-                    if cat in ["metadata"] or not isinstance(timeframes, dict):
-                        continue
-                    for tf, markets in timeframes.items():
-                        for m in markets:
-                            if m.get("id") == market_id:
-                                found = m
-                                found["_category"] = cat
-                                found["_timeframe"] = tf
-                                break
-                        if found:
-                            break
-                    if found:
-                        break
-            if found:
-                self.send_json_response({"status": "success", "market": found})
-            else:
-                self.send_error(404, f"Market ID '{market_id}' not found")
+        if parsed.path == "/api/yahoo/quotes":
+            sym_param = params.get("symbols", [None])[0]
+            symbols_to_fetch = [s.strip().upper() for s in sym_param.split(",")] if sym_param else ALL_TRACKED_SYMBOLS
+            quotes = fetch_all_quotes(symbols_to_fetch)
+            self.send_json_response({
+                "status": "success",
+                "source": "Yahoo Finance API (v8)",
+                "count": len(quotes),
+                "quotes": quotes,
+                "timestamp": datetime.utcnow().isoformat() + "Z"
+            })
             return
 
-        # Serve static files (HTML, CSS, JS, JSON)
+        if parsed.path == "/api/yahoo/news":
+            news = fetch_yahoo_stock_news()
+            self.send_json_response({
+                "status": "success",
+                "source": "Yahoo Finance RSS Equities Wire",
+                "count": len(news),
+                "items": news,
+                "timestamp": datetime.utcnow().isoformat() + "Z"
+            })
+            return
+
+        if parsed.path == "/api/stocks/us":
+            quotes = fetch_all_quotes(US_SYMBOLS)
+            self.send_json_response({
+                "status": "success",
+                "market": "US_TOP_20",
+                "symbols": US_SYMBOLS,
+                "quotes": quotes,
+                "timestamp": datetime.utcnow().isoformat() + "Z"
+            })
+            return
+
+        if parsed.path == "/api/stocks/uk":
+            quotes = fetch_all_quotes(UK_SYMBOLS)
+            self.send_json_response({
+                "status": "success",
+                "market": "UK_TOP_20",
+                "symbols": UK_SYMBOLS,
+                "quotes": quotes,
+                "timestamp": datetime.utcnow().isoformat() + "Z"
+            })
+            return
+
+        if parsed.path == "/api/stocks/high-risers":
+            quotes = fetch_all_quotes(RISER_SYMBOLS)
+            self.send_json_response({
+                "status": "success",
+                "category": "HIGH_GROWTH_RISERS",
+                "symbols": RISER_SYMBOLS,
+                "quotes": quotes,
+                "timestamp": datetime.utcnow().isoformat() + "Z"
+            })
+            return
+
         super().do_GET()
 
     def do_POST(self):
         parsed = urllib.parse.urlparse(self.path)
-        if parsed.path == "/api/scan":
-            trigger_live_sync()
+
+        if parsed.path in ["/api/yahoo/sync", "/api/scan"]:
+            quotes = fetch_all_quotes(ALL_TRACKED_SYMBOLS)
+            news = fetch_yahoo_stock_news()
             self.send_json_response({
                 "status": "success",
-                "scannedMarkets": 210,
-                "newsSourcesParsed": ["Bloomberg", "Reuters", "Financial Times", "CoinDesk", "The Athletic", "Sky Sports", "Marca", "Kicker", "Opta"],
-                "message": "Macro hedge fund news and social media intelligence successfully refreshed across 210 Polymarket markets.",
-                "lastSync": LAST_SYNC_TIME,
-                "timestamp": datetime.now(timezone.utc).isoformat(),
-                "signature": "KPOINT made this one. Not financial advice the risk is yours and yours only."
+                "message": "Real-time Yahoo Finance stock quotes and equities news synchronized.",
+                "synced_quotes_count": len(quotes),
+                "synced_news_count": len(news),
+                "timestamp": datetime.utcnow().isoformat() + "Z"
             })
             return
 
@@ -232,7 +275,7 @@ class PolymarketAlphaHandler(SimpleHTTPRequestHandler):
     def send_json_response(self, data, status_code=200):
         body = json.dumps(data, indent=2).encode("utf-8")
         self.send_response(status_code)
-        self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header("Content-Type", "application/json")
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
@@ -248,16 +291,19 @@ class PolymarketAlphaHandler(SimpleHTTPRequestHandler):
         self.end_headers()
 
 def run_server():
-    load_database()
     server_address = ("", PORT)
-    httpd = HTTPServer(server_address, PolymarketAlphaHandler)
-    print("=" * 75)
-    print("  KPOINT // POLYMARKET MACRO ALPHA TERMINAL (BLUE & WHITE)")
+    httpd = HTTPServer(server_address, StockTerminalHandler)
+    print("=" * 72)
+    print("  QUANTO EQUITIES // INSTITUTIONAL HEDGE FUND STOCK TERMINAL")
     print(f"  URL: http://localhost:{PORT}")
-    print("  Status: 210 Live Markets Loaded Across 7 Categories (Day, Week, Month)")
-    print("  API Key Requirement: ZERO API Keys Required (Polymarket Gamma API is Public)")
-    print("  Attribution: KPOINT made this one. Not financial advice the risk is yours and yours only.")
-    print("=" * 75)
+    print("  Live Data Provider: Yahoo Finance API (v8)")
+    print("  Stock Coverage: Top 20 US Stocks, Top 20 UK Stocks, High Risers")
+    print("  API Endpoints:")
+    print(f"    - GET  http://localhost:{PORT}/api/status")
+    print(f"    - GET  http://localhost:{PORT}/api/yahoo/quotes")
+    print(f"    - GET  http://localhost:{PORT}/api/yahoo/news")
+    print(f"    - POST http://localhost:{PORT}/api/yahoo/sync")
+    print("=" * 72)
     print("Press Ctrl+C to stop.")
     try:
         httpd.serve_forever()
