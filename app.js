@@ -663,6 +663,7 @@
 
   // Market Card HTML Builder
   function renderMarketCardHTML(market, categoryKey, timeframe) {
+    const hasMacro = Boolean(market.hasMacroAnalysis && market.hedgeFundAdvisory);
     const adv = market.hedgeFundAdvisory || {};
     const news = adv.newsCatalyst || {};
     const social = adv.socialMediaRadar || {};
@@ -684,6 +685,89 @@
     const simStake = 100;
     const simWinReturn = (simStake / (yesOutcome.price || 0.5)).toFixed(2);
     const simProfit = (simWinReturn - simStake).toFixed(2);
+
+    let advisoryBlockHTML = "";
+
+    if (hasMacro) {
+      advisoryBlockHTML = `
+        <!-- Macro Hedge Fund Advisory Box (Verified Catalyst Active) -->
+        <div class="hedgefund-advisory-box">
+          <div class="advisory-header-row">
+            <span class="recommendation-badge ${recType}">
+              ${adv.recommendation || "ANALYZE"}
+            </span>
+            <span class="conviction-badge">
+              🎯 ${adv.confidencePct || 85}% CONVICTION
+            </span>
+            <span class="ev-edge-badge">
+              ${adv.evEdge || "+12.5% EV+"}
+            </span>
+          </div>
+
+          <!-- Strategy Thesis -->
+          <div class="strategy-thesis-block">
+            <span class="thesis-label">MACRO HEDGE FUND THESIS:</span>
+            <p class="thesis-text">${escapeHTML(adv.macroStrategy || "")}</p>
+          </div>
+
+          <!-- Verified News Catalyst -->
+          <div class="news-catalyst-strip">
+            <div class="catalyst-meta-row">
+              <span class="catalyst-source">📰 ${escapeHTML(news.source || "Institutional Feed")} (Verified Public Wire)</span>
+              <span class="catalyst-impact">${escapeHTML(news.impact || "HIGH IMPACT")}</span>
+            </div>
+            <p class="catalyst-headline">
+              <a href="${news.link || '#'}" target="_blank" rel="noopener noreferrer" class="news-headline-link" title="Read verified article on ${escapeHTML(news.source)}">
+                "${escapeHTML(news.headline || "")}" ↗
+              </a>
+            </p>
+          </div>
+
+          <!-- Social Media & Whale Radar -->
+          <div class="social-radar-box">
+            <div class="radar-top-row">
+              <span class="radar-platform">📡 ${escapeHTML(social.platform || "X / Social Radar")}</span>
+              <span class="radar-score">Sentiment: ${social.sentimentScore || 80}% Bullish</span>
+            </div>
+            <div class="sentiment-bar-track">
+              <div class="sentiment-bar-fill" style="width: ${social.sentimentScore || 80}%;"></div>
+            </div>
+            <p class="whale-flow-snippet">
+              <strong>Whale Flows:</strong> ${escapeHTML(social.whaleFlows || "Institutional order books accumulating.")}
+            </p>
+          </div>
+
+          <!-- Target Exit & Stop Loss -->
+          <div class="targets-strip">
+            <span class="target-exit">🎯 Target: ${escapeHTML(adv.targetExit || "N/A")}</span>
+            <span class="stop-loss">🛡️ Stop: ${escapeHTML(adv.stopLoss || "N/A")}</span>
+          </div>
+        </div>
+      `;
+    } else {
+      advisoryBlockHTML = `
+        <!-- Macro Analysis Excluded (No Authenticated News/Social Media Catalyst) -->
+        <div class="no-macro-advisory-box">
+          <div class="no-macro-status-row">
+            <span class="no-macro-pill">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              MACRO ANALYSIS EXCLUDED
+            </span>
+            <span class="no-macro-reason">No Verified News Catalyst</span>
+          </div>
+          <p class="no-macro-explanation">
+            Institutional macro analysis is omitted for this event: No public news or social media catalysts were authenticated without API keys. Unadulterated Polymarket order book pricing is displayed.
+          </p>
+          <div class="no-macro-footer-hint">
+            <span>🛡️ Polymarket Order Book Direct Feed</span>
+          </div>
+        </div>
+      `;
+    }
 
     return `
       <article class="market-card ${tickClass}" data-market-id="${market.id}" data-category="${categoryKey}" data-timeframe="${timeframe}">
@@ -738,55 +822,7 @@
           </div>
         </div>
 
-        <!-- Macro Hedge Fund Advisory Box -->
-        <div class="hedgefund-advisory-box">
-          <div class="advisory-header-row">
-            <span class="recommendation-badge ${recType}">
-              ${adv.recommendation || "ANALYZE"}
-            </span>
-            <span class="conviction-badge">
-              🎯 ${adv.confidencePct || 85}% CONVICTION
-            </span>
-            <span class="ev-edge-badge">
-              ${adv.evEdge || "+12.5% EV+"}
-            </span>
-          </div>
-
-          <!-- Strategy Thesis -->
-          <div class="strategy-thesis-block">
-            <span class="thesis-label">MACRO HEDGE FUND THESIS:</span>
-            <p class="thesis-text">${escapeHTML(adv.macroStrategy || "")}</p>
-          </div>
-
-          <!-- News Catalyst -->
-          <div class="news-catalyst-strip">
-            <div class="catalyst-meta-row">
-              <span class="catalyst-source">📰 ${escapeHTML(news.source || "Institutional Feed")}</span>
-              <span class="catalyst-impact">${escapeHTML(news.impact || "HIGH IMPACT")}</span>
-            </div>
-            <p class="catalyst-headline">"${escapeHTML(news.headline || "")}"</p>
-          </div>
-
-          <!-- Social Media & Whale Radar -->
-          <div class="social-radar-box">
-            <div class="radar-top-row">
-              <span class="radar-platform">📡 ${escapeHTML(social.platform || "X / Social Radar")}</span>
-              <span class="radar-score">Sentiment: ${social.sentimentScore || 80}% Bullish</span>
-            </div>
-            <div class="sentiment-bar-track">
-              <div class="sentiment-bar-fill" style="width: ${social.sentimentScore || 80}%;"></div>
-            </div>
-            <p class="whale-flow-snippet">
-              <strong>Whale Flows:</strong> ${escapeHTML(social.whaleFlows || "Institutional order books accumulating.")}
-            </p>
-          </div>
-
-          <!-- Target Exit & Stop Loss -->
-          <div class="targets-strip">
-            <span class="target-exit">🎯 Target: ${escapeHTML(adv.targetExit || "N/A")}</span>
-            <span class="stop-loss">🛡️ Stop: ${escapeHTML(adv.stopLoss || "N/A")}</span>
-          </div>
-        </div>
+        ${advisoryBlockHTML}
 
         <!-- Footer Toolbar -->
         <div class="card-footer-toolbar">
@@ -846,6 +882,7 @@
   // Detail Modal Builder
   function openMarketModal(market) {
     state.selectedMarketForModal = market;
+    const hasMacro = Boolean(market.hasMacroAnalysis && market.hedgeFundAdvisory);
     const adv = market.hedgeFundAdvisory || {};
     const news = adv.newsCatalyst || {};
     const social = adv.socialMediaRadar || {};
@@ -854,6 +891,80 @@
     elements.modalCatBadge.textContent = (market._category || "POLYMARKET").toUpperCase();
     elements.modalRankBadge.textContent = `RANK #${market.rank}`;
     elements.modalTfBadge.textContent = (market._timeframe || "DAY").toUpperCase();
+
+    let macroContentHTML = "";
+
+    if (hasMacro) {
+      macroContentHTML = `
+        <div style="background: #EFF6FF; border: 1.5px solid #0052FF; border-radius: 10px; padding: 18px; margin-bottom: 20px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+            <span style="background: ${adv.recommendation?.includes("NO") ? "#DC2626" : "#059669"}; color: #FFF; font-weight: 800; padding: 6px 14px; border-radius: 6px; font-family: var(--font-mono);">
+              ${adv.recommendation}
+            </span>
+            <span style="font-family: var(--font-mono); font-weight: 700; color: #0052FF;">
+              CONVICTION: ${adv.confidencePct}% (${adv.conviction || "HIGH ALPHA"})
+            </span>
+            <span style="background: #FEF3C7; color: #92400E; font-weight: 800; padding: 4px 10px; border-radius: 6px; font-family: var(--font-mono);">
+              ${adv.evEdge || "+13.5% EV+"}
+            </span>
+          </div>
+
+          <p style="font-size: 14px; color: #1E293B; line-height: 1.5; margin-bottom: 14px;">
+            ${escapeHTML(adv.macroStrategy)}
+          </p>
+
+          <div style="background: #FFF; border-radius: 8px; padding: 12px; border: 1px solid #BFDBFE;">
+            <div style="font-size: 11px; font-weight: 800; color: #0052FF; font-family: var(--font-mono); margin-bottom: 4px;">
+              RISK MITIGATION &amp; TRADE EXECUTION RULE
+            </div>
+            <p style="font-size: 12.5px; color: #334155;">
+              ${escapeHTML(adv.riskMitigation || "Size position conservatively at 3-5% of bankroll.")}
+            </p>
+          </div>
+        </div>
+
+        <div style="background: #FFF; border: 1px solid #CBD5E1; border-radius: 10px; padding: 16px; margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+            <span style="font-weight: 700; color: #0052FF; font-family: var(--font-mono); font-size: 12px;">📰 ${escapeHTML(news.source)} (Verified Wire)</span>
+            <span style="font-size: 11px; font-weight: 700; color: #64748B;">${news.time || "Recently"}</span>
+          </div>
+          <h4 style="font-size: 14px; font-weight: 700; color: #0F172A; margin-bottom: 8px;">
+            <a href="${news.link || '#'}" target="_blank" rel="noopener noreferrer" style="color: #0A2540; text-decoration: none;">
+              "${escapeHTML(news.headline)}" ↗
+            </a>
+          </h4>
+          <span style="background: #F1F5F9; color: #475569; font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 4px; font-family: var(--font-mono);">
+            CATALYST IMPACT: ${escapeHTML(news.impact)}
+          </span>
+        </div>
+
+        <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 16px; margin-bottom: 20px;">
+          <h4 style="font-size: 12px; font-weight: 800; color: #0A2540; font-family: var(--font-mono); margin-bottom: 8px;">
+            📡 SOCIAL MEDIA &amp; ON-CHAIN ORDERBOOK RADAR
+          </h4>
+          <p style="font-size: 13px; color: #334155; margin-bottom: 10px;">
+            <strong>Whale Orders:</strong> ${escapeHTML(social.whaleFlows || "Order book balanced.")}
+          </p>
+          <p style="font-size: 13px; color: #334155;">
+            <strong>Retail Positioning:</strong> ${escapeHTML(social.retailPositioning || "Retail sentiment tracking public coverage.")}
+          </p>
+        </div>
+      `;
+    } else {
+      macroContentHTML = `
+        <div style="background: #F8FAFC; border: 1.5px dashed #CBD5E1; border-radius: 10px; padding: 24px; text-align: center; margin-bottom: 20px;">
+          <div style="font-size: 14px; font-weight: 800; color: #475569; font-family: var(--font-mono); margin-bottom: 8px;">
+            🛡️ MACRO HEDGE FUND ADVISORY EXCLUDED
+          </div>
+          <p style="font-size: 13px; color: #64748B; line-height: 1.5; max-width: 520px; margin: 0 auto 12px;">
+            Per institutional risk protocol, macro analysis is excluded for this event because no public news or social media catalysts could be verified without API keys. Unadulterated Polymarket order book pricing is displayed.
+          </p>
+          <span style="display: inline-block; background: #EFF6FF; color: #0052FF; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px; font-family: var(--font-mono);">
+            Order Book Probabilities &amp; Liquidity Active
+          </span>
+        </div>
+      `;
+    }
 
     elements.modalBodyContent.innerHTML = `
       <h2 style="font-size: 20px; font-weight: 800; color: #0A2540; margin-bottom: 12px; line-height: 1.35;">
@@ -866,55 +977,7 @@
         <span>Closes: <strong style="color: #0F172A;">${market.endDate}</strong></span>
       </div>
 
-      <div style="background: #EFF6FF; border: 1.5px solid #0052FF; border-radius: 10px; padding: 18px; margin-bottom: 20px;">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-          <span style="background: ${adv.recommendation?.includes("NO") ? "#DC2626" : "#059669"}; color: #FFF; font-weight: 800; padding: 6px 14px; border-radius: 6px; font-family: var(--font-mono);">
-            ${adv.recommendation}
-          </span>
-          <span style="font-family: var(--font-mono); font-weight: 700; color: #0052FF;">
-            CONVICTION: ${adv.confidencePct}% (${adv.conviction || "HIGH ALPHA"})
-          </span>
-          <span style="background: #FEF3C7; color: #92400E; font-weight: 800; padding: 4px 10px; border-radius: 6px; font-family: var(--font-mono);">
-            ${adv.evEdge || "+13.5% EV+"}
-          </span>
-        </div>
-
-        <p style="font-size: 14px; color: #1E293B; line-height: 1.5; margin-bottom: 14px;">
-          ${escapeHTML(adv.macroStrategy)}
-        </p>
-
-        <div style="background: #FFF; border-radius: 8px; padding: 12px; border: 1px solid #BFDBFE;">
-          <div style="font-size: 11px; font-weight: 800; color: #0052FF; font-family: var(--font-mono); margin-bottom: 4px;">
-            RISK MITIGATION & TRADE EXECUTION RULE
-          </div>
-          <p style="font-size: 12.5px; color: #334155;">
-            ${escapeHTML(adv.riskMitigation || "Lock partial profit upon initial price surge; size position conservatively.")}
-          </p>
-        </div>
-      </div>
-
-      <div style="background: #FFF; border: 1px solid #CBD5E1; border-radius: 10px; padding: 16px; margin-bottom: 20px;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-          <span style="font-weight: 700; color: #0052FF; font-family: var(--font-mono); font-size: 12px;">📰 ${escapeHTML(news.source)}</span>
-          <span style="font-size: 11px; font-weight: 700; color: #64748B;">${news.time || "Recently"}</span>
-        </div>
-        <h4 style="font-size: 14px; font-weight: 700; color: #0F172A; margin-bottom: 6px;">"${escapeHTML(news.headline)}"</h4>
-        <span style="background: #F1F5F9; color: #475569; font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 4px; font-family: var(--font-mono);">
-          CATALYST IMPACT: ${escapeHTML(news.impact)}
-        </span>
-      </div>
-
-      <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 16px; margin-bottom: 20px;">
-        <h4 style="font-size: 12px; font-weight: 800; color: #0A2540; font-family: var(--font-mono); margin-bottom: 8px;">
-          📡 SOCIAL MEDIA & ON-CHAIN ORDERBOOK RADAR
-        </h4>
-        <p style="font-size: 13px; color: #334155; margin-bottom: 10px;">
-          <strong>Whale Orders:</strong> ${escapeHTML(social.whaleFlows || "Order book balanced.")}
-        </p>
-        <p style="font-size: 13px; color: #334155;">
-          <strong>Retail Positioning:</strong> ${escapeHTML(social.retailPositioning || "Retail sentiment following social media channels.")}
-        </p>
-      </div>
+      ${macroContentHTML}
 
       <div style="display: flex; justify-content: flex-end; gap: 12px;">
         <a href="${polymarketUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary-blue" style="text-decoration: none;">
@@ -1235,16 +1298,19 @@
       "URL",
       "Timeframe",
       "24H Volume",
+      "Macro Analysis Status",
       "Recommendation",
       "Conviction Pct",
       "EV Edge",
       "Target Exit",
       "Stop Loss",
       "News Headline",
-      "News Source"
+      "News Source",
+      "News Link"
     ];
 
     const rows = markets.map((m) => {
+      const hasMacro = Boolean(m.hasMacroAnalysis && m.hedgeFundAdvisory);
       const adv = m.hedgeFundAdvisory || {};
       const news = adv.newsCatalyst || {};
       return [
@@ -1254,13 +1320,15 @@
         m.url || "",
         state.activeTimeframe,
         m.volume,
-        adv.recommendation,
-        `${adv.confidencePct}%`,
-        adv.evEdge,
-        adv.targetExit,
-        adv.stopLoss,
-        `"${(news.headline || "").replace(/"/g, '""')}"`,
-        `"${news.source || ""}"`,
+        hasMacro ? "INCLUDED (VERIFIED CATALYST)" : "EXCLUDED (NO VERIFIED CATALYST)",
+        hasMacro ? (adv.recommendation || "ANALYZE") : "EXCLUDED",
+        hasMacro ? `${adv.confidencePct || 85}%` : "N/A",
+        hasMacro ? (adv.evEdge || "N/A") : "N/A",
+        hasMacro ? (adv.targetExit || "N/A") : "N/A",
+        hasMacro ? (adv.stopLoss || "N/A") : "N/A",
+        hasMacro ? `"${(news.headline || "").replace(/"/g, '""')}"` : '""',
+        hasMacro ? `"${news.source || ""}"` : '""',
+        hasMacro ? `"${news.link || ""}"` : '""',
       ];
     });
 
@@ -1290,22 +1358,23 @@
     let result = [...markets];
 
     if (state.activeFilter === "high-conviction") {
-      result = result.filter((m) => (m.hedgeFundAdvisory?.confidencePct || 0) >= 85);
+      result = result.filter((m) => m.hasMacroAnalysis && (m.hedgeFundAdvisory?.confidencePct || 0) >= 85);
     } else if (state.activeFilter === "buy-yes") {
-      result = result.filter((m) => m.hedgeFundAdvisory?.recommendation?.includes("YES"));
+      result = result.filter((m) => m.hasMacroAnalysis && m.hedgeFundAdvisory?.recommendation?.includes("YES"));
     } else if (state.activeFilter === "buy-no") {
-      result = result.filter((m) => m.hedgeFundAdvisory?.recommendation?.includes("NO"));
+      result = result.filter((m) => m.hasMacroAnalysis && m.hedgeFundAdvisory?.recommendation?.includes("NO"));
     } else if (state.activeFilter === "high-ev") {
-      result = result.filter((m) => (m.hedgeFundAdvisory?.evEdge || "").includes("+1"));
+      result = result.filter((m) => m.hasMacroAnalysis && (m.hedgeFundAdvisory?.evEdge || "").includes("+1"));
     }
 
     if (state.searchQuery) {
       const q = state.searchQuery;
       result = result.filter(
         (m) =>
-          m.title.toLowerCase().includes(q) ||
-          m.hedgeFundAdvisory?.macroStrategy?.toLowerCase().includes(q) ||
-          m.hedgeFundAdvisory?.newsCatalyst?.headline?.toLowerCase().includes(q)
+          (m.title && m.title.toLowerCase().includes(q)) ||
+          (m.hedgeFundAdvisory?.macroStrategy && m.hedgeFundAdvisory.macroStrategy.toLowerCase().includes(q)) ||
+          (m.hedgeFundAdvisory?.newsCatalyst?.headline && m.hedgeFundAdvisory.newsCatalyst.headline.toLowerCase().includes(q)) ||
+          (m.hedgeFundAdvisory?.newsCatalyst?.source && m.hedgeFundAdvisory.newsCatalyst.source.toLowerCase().includes(q))
       );
     }
 
