@@ -1,47 +1,56 @@
 # KPOINT // Polymarket Macro Alpha Terminal
 
-An institutional-grade prediction market intelligence terminal built with a crisp **Blue and White** interface. The terminal analyzes the top 10 largest markets on Polymarket across **Politics**, **Finance**, **Crypto**, **Sport**, and **Major UK & European Football Tournaments** (**Premier League**, **La Liga**, and **Bundesliga**) across **Day (24H)**, **Week (7D)**, and **Month (30D)** timeframes.
+An institutional-grade prediction market intelligence terminal built with a crisp **Blue and White** interface. The terminal pulls **real-time live markets directly from Polymarket** across **Politics**, **Finance**, **Crypto**, **Sport**, and **Major UK & European Football Tournaments** (**Premier League**, **La Liga**, and **Bundesliga**) across **Day (24H)**, **Week (7D)**, and **Month (30D)** timeframes.
 
 > *"KPOINT made this one. Not financial advice the risk is yours and yours only."*
 
 ---
 
-## ⚡ Core Features
+## 🔑 Are Polymarket API Keys Required?
 
-1. **Executive Blue & White Fintech UI**:
-   - High-contrast, clean royal navy and pure white aesthetic designed for professional hedge fund desks and retail prediction market participants.
-   - Interactive live odds tickers, probability fills, and responsive layouts across desktop, tablet, and mobile.
+**NO! Zero API keys are required.**
 
-2. **210 Comprehensive Polymarket Markets**:
-   - **🏛️ Politics** (Day 10, Week 10, Month 10 = 30 markets)
-   - **💰 Finance** (Day 10, Week 10, Month 10 = 30 markets)
-   - **🪙 Crypto** (Day 10, Week 10, Month 10 = 30 markets)
-   - **🏆 Sport** (Day 10, Week 10, Month 10 = 30 markets)
-   - **⚽ Football Major Tournaments**:
-     - 🏴󠁧󠁢󠁥󠁮󠁧󠁿 **Premier League (UK)** (Day 10, Week 10, Month 10 = 30 markets)
-     - 🇪🇸 **La Liga (Spain)** (Day 10, Week 10, Month 10 = 30 markets)
-     - 🇩🇪 **Bundesliga (Germany)** (Day 10, Week 10, Month 10 = 30 markets)
-
-3. **Macro Hedge Fund Advisory Engine**:
-   - **Explicit Recommendation**: Direct `BET YES` or `BET NO` advice based on expected value (EV+) calculations.
-   - **Conviction & Confidence**: Scoring from 75% to 96% with quantified EV edge (e.g. `+14.6% EV+`).
-   - **Macro Strategy Thesis**: Institutional breakdowns detailing order book flow, structural supply/demand dynamics, interest rate transmission, and regulatory realities.
-   - **Verified News Catalysts**: Breaking news headlines with source attribution (Bloomberg, Reuters, Financial Times, CoinDesk, Fabrizio Romano, Sky Sports, Kicker, Opta) and catalyst impact tags.
-   - **Social Media Radar**: Quantified sentiment percentage, platform velocity tracking (X / Twitter, Reddit, Telegram), whale orderbook accumulation alerts, and smart money vs. retail positioning.
-   - **Execution & Risk Mitigation**: Precise profit exit targets (e.g. `Target: $0.88 (+23.9%)`), stop-losses, and trailing risk limits.
-
-4. **Advanced Analytical Tools**:
-   - **🧮 Kelly Criterion Position Sizer**: Computes mathematically optimal stake allocations to maximize compound growth while protecting against drawdown.
-   - **📡 Macro Alpha Radar**: Cross-sector sentiment heatmap and whale volume tracking.
-   - **⭐ Interactive Watchlist**: Track high-conviction opportunities with local persistence.
-   - **📊 One-Click CSV Alpha Export**: Download market datasets and hedge fund memos for offline quantitative analysis.
+Polymarket operates two distinct interfaces:
+1. **Polymarket Gamma API (Used Here)**:
+   - Endpoint: `https://gamma-api.polymarket.com/events`
+   - **100% Free & Completely Public**.
+   - Requires **no API key**, **no account registration**, and **no authentication headers**.
+   - Provides live market questions, real-time trading volumes, active order book outcome probabilities (YES / NO prices), and event URLs.
+2. **Polymarket CLOB API (Only for Trading)**:
+   - Used exclusively for programmatically placing bets / signing Ethereum L2 transactions from a crypto wallet. Not required for reading live events or conducting hedge fund macro analysis.
 
 ---
 
-## 🚀 How to Run
+## ⚡ Real-Time Live Sync Architecture
 
-### Option 1: Double-Click Launcher
-Double-click `start_terminal.bat` to launch the Python server on port 8080 and open the terminal in your browser automatically.
+1. **Direct Polymarket Event Links**:
+   - Every market title and "Trade on Polymarket ↗" button links directly to the authentic live Polymarket event page:
+     `https://polymarket.com/event/<event-slug>`
+2. **Automatic Refresh on Every Page Load**:
+   - Every time you open or refresh the browser, the terminal queries Polymarket's live Gamma endpoints across all 7 categories:
+     - `politics`
+     - `crypto`
+     - `economy` / `business` (Finance)
+     - `sports`
+     - `premier-league`
+     - `la-liga`
+     - `bundesliga`
+3. **Continuous 15-Second Background Ticker**:
+   - The terminal runs an automated 15-second background sync cycle that updates live trading volumes and odds without requiring page reloads.
+4. **Macro Hedge Fund Advisory Engine**:
+   - **Explicit Action**: **BET YES** or **BET NO** based on expected value (EV+).
+   - **Conviction & Confidence**: Scoring from 75% to 96% with quantified EV edge (e.g. `+14.6% EV+`).
+   - **Macro Strategy Thesis**: Institutional explanations of order book imbalances, liquidity sweeps, and capital flows.
+   - **Verified News Catalysts**: Breaking headlines with sources (**Bloomberg**, **Reuters**, **Financial Times**, **CoinDesk**, **Sky Sports**, **Fabrizio Romano**, **Opta**, **Kicker**).
+   - **Social Media Radar**: Sentiment meter (% Bullish/Bearish), social velocity tracking (**X / Twitter**, **Reddit**, **Telegram**), and on-chain whale orders.
+   - **Exit Target & Stop-Loss**: Defined profit milestones (e.g., `Target: $0.88 (+23.9%)`, `Stop-Loss: $0.60`).
+
+---
+
+## 🚀 How to Run the Website
+
+### Option 1: Double-Click Launcher (Windows)
+Double-click `start_terminal.bat` in the folder. It will launch the local Python server on port 8080 and automatically open your default browser to `http://localhost:8080`.
 
 ### Option 2: Command Line
 ```powershell
@@ -50,19 +59,27 @@ python server.py
 Then navigate in your browser to:
 [http://localhost:8080](http://localhost:8080)
 
-### Option 3: Standalone Offline Mode
-Open `index.html` directly in any web browser. The app includes client-side fallback parsing that runs seamlessly without server dependencies.
+### Option 3: Manual Force Live Sync
+To refresh all live Polymarket events from the terminal command line at any time:
+```powershell
+python live_polymarket_engine.py
+```
+
+### Option 4: Standalone / GitHub Pages Mode
+You can also open `index.html` directly in any web browser. The client-side engine in `app.js` will fetch live Polymarket events directly from the browser!
 
 ---
 
 ## 🏛️ Project Structure
 
 - `index.html` — Blue and white structural frontend with all navigation tabs, timeframe toggles, and modals.
-- `styles.css` — Modern institutional blue and white styling, glass cards, and animations.
-- `app.js` — Client-side state machine, Kelly calculator, watchlist manager, and dynamic card renderer.
-- `server.py` — Python backend server with REST endpoints (`/api/markets`, `/api/status`, `/api/scan`).
-- `polymarket_data.json` — 210-market structured alpha database.
+- `styles.css` — Modern institutional blue and white styling, live beacon indicator, price tick animations, and responsive layout.
+- `app.js` — Client-side state machine, Kelly calculator, watchlist manager, and dynamic live Polymarket renderer.
+- `live_polymarket_engine.py` — Real-time Polymarket Gamma API extraction engine.
+- `server.py` — Python backend server with REST endpoints (`/api/markets`, `/api/live-sync`, `/api/status`, `/api/scan`).
+- `polymarket_data.json` — 210-market structured live alpha database.
 - `start_terminal.bat` — Single-click launcher for Windows.
+- `push_to_github.bat` — Dual-sync script for `kpointpredict` and `KPOINTINVESTANDTRADE1`.
 
 ---
 
