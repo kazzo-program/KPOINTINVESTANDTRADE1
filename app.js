@@ -1,5 +1,5 @@
 /**
- * QUANTO EQUITIES // INSTITUTIONAL HEDGE FUND STOCK TERMINAL
+ * KPOINT EQUITIES ALPHA // INSTITUTIONAL HEDGE FUND STOCK TERMINAL
  * 100% Equities Focus: Top 20 US Stocks, Top 20 UK Stocks, High Risers
  * Powered by Real-Time Yahoo Finance API (v8) & News Stream Engine
  */

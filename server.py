@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-QUANTO EQUITIES // INSTITUTIONAL HEDGE FUND STOCK TERMINAL
+KPOINT EQUITIES ALPHA // INSTITUTIONAL HEDGE FUND STOCK TERMINAL
 100% Stock-Focused Backend Server with Real-Time Yahoo Finance API Integration
 
 Features:
@@ -183,7 +183,7 @@ class StockTerminalHandler(SimpleHTTPRequestHandler):
         if parsed.path == "/api/status":
             self.send_json_response({
                 "status": "ONLINE",
-                "engine": "QUANTO EQUITIES // YAHOO FINANCE LIVE FEED",
+                "engine": "KPOINT EQUITIES ALPHA // YAHOO FINANCE LIVE FEED",
                 "coverage": {
                     "total_stocks": len(ALL_TRACKED_SYMBOLS),
                     "us_stocks": len(US_SYMBOLS),
@@ -294,7 +294,7 @@ def run_server():
     server_address = ("", PORT)
     httpd = HTTPServer(server_address, StockTerminalHandler)
     print("=" * 72)
-    print("  QUANTO EQUITIES // INSTITUTIONAL HEDGE FUND STOCK TERMINAL")
+    print("  KPOINT EQUITIES ALPHA // INSTITUTIONAL HEDGE FUND STOCK TERMINAL")
     print(f"  URL: http://localhost:{PORT}")
     print("  Live Data Provider: Yahoo Finance API (v8)")
     print("  Stock Coverage: Top 20 US Stocks, Top 20 UK Stocks, High Risers")

@@ -1,5 +1,5 @@
 /* ========================================================
-   QUANTO EQUITIES // INSTITUTIONAL HEDGE FUND STOCK TERMINAL
+   KPOINT EQUITIES ALPHA // INSTITUTIONAL HEDGE FUND STOCK TERMINAL
    Aesthetic: Pitch Black High-Contrast Hedge Fund Terminal
    Live Data: Yahoo Finance API (v8) & Equities News Engine
    ======================================================== */
@@ -1576,4 +1576,222 @@ body.theme-deep-blue {
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+/* ========================================================
+   MOBILE RESPONSIVE OPTIMIZATION (PREVENTS HEADER BLOCKING)
+   ======================================================== */
+@media (max-width: 768px) {
+  /* 1. Unstick the bulky header & nav so they never stay pinned blocking half the screen */
+  .terminal-header {
+    position: static;
+    backdrop-filter: none;
+  }
+
+  .main-tabs-nav {
+    position: static;
+    top: auto;
+  }
+
+  /* 2. Compact Top Navigation Bar */
+  .top-nav-bar {
+    padding: 8px 12px;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .brand-cluster {
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .brand-radar-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+
+  .brand-title {
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .brand-sub {
+    display: none;
+  }
+
+  .yahoo-status-badge {
+    display: none;
+  }
+
+  /* 3. Sleek horizontal swipe for macro regime status */
+  .macro-regime-status {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 12px;
+    padding: 6px 12px;
+    background: rgba(0, 0, 0, 0.4);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    width: 100%;
+    order: 3;
+  }
+
+  .macro-regime-status::-webkit-scrollbar {
+    display: none;
+  }
+
+  .regime-item {
+    flex-shrink: 0;
+  }
+
+  .regime-label {
+    font-size: 8px;
+  }
+
+  .regime-val {
+    font-size: 11px;
+  }
+
+  /* 4. Action buttons on mobile */
+  .action-cluster {
+    gap: 6px;
+    flex-shrink: 0;
+    flex-wrap: nowrap;
+  }
+
+  .btn-yahoo-refresh {
+    padding: 5px 9px;
+    font-size: 10px;
+    gap: 5px;
+    white-space: nowrap;
+  }
+
+  .theme-switch-btn {
+    padding: 5px 9px;
+    font-size: 10px;
+    white-space: nowrap;
+  }
+
+  .scanner-clock {
+    display: none;
+  }
+
+  /* 5. Ticker ribbon */
+  .ticker-ribbon {
+    padding: 4px 10px;
+    font-size: 10px;
+    gap: 12px;
+  }
+
+  /* 6. Touch-scrollable tabs on mobile */
+  .main-tabs-nav {
+    padding: 6px 10px;
+    gap: 6px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tab-list {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 5px;
+    width: 100%;
+    padding-bottom: 2px;
+  }
+
+  .tab-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tab-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+
+  .tab-pill {
+    display: none;
+  }
+
+  /* 7. Quick jump links */
+  .quick-jump-container {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 5px;
+    width: 100%;
+    padding-top: 4px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .quick-jump-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .jump-title {
+    font-size: 9px;
+    flex-shrink: 0;
+  }
+
+  .jump-chip {
+    padding: 2px 7px;
+    font-size: 10px;
+    flex-shrink: 0;
+  }
+
+  /* 8. Main content & Hero sizing on mobile */
+  .terminal-body {
+    padding: 12px 10px 40px;
+  }
+
+  .stock-hero-banner {
+    padding: 12px 14px;
+    margin-bottom: 14px;
+  }
+
+  .stock-hero-title-area h2 {
+    font-size: 16px;
+  }
+
+  .stock-hero-subtitle {
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .timeframe-leaderboard-banner {
+    padding: 8px 12px;
+    margin-bottom: 12px;
+  }
+
+  .stocks-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .stock-card {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  #sync-btn-label {
+    font-size: 0;
+  }
+  #sync-btn-label::before {
+    content: "Sync";
+    font-size: 10px;
+  }
+  #theme-switch-text {
+    display: none;
+  }
 }

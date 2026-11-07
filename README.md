@@ -1,4 +1,4 @@
-# QUANTO EQUITIES // Institutional Macro Stock Terminal
+# KPoint Equities Alpha // Institutional Macro Stock Terminal
 
 > **100% Equities Focus // Macro Hedge Fund News Strategy // Powered by Yahoo Finance API**  
 > Complete coverage of **Top 20 US Stocks**, **Top 20 UK Stocks**, and **High Risers** (rapid value acceleration & hyper-growth).  

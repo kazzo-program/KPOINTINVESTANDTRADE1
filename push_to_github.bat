@@ -1,7 +1,7 @@
 @echo off
-title QUANTO EQUITIES - Push to GitHub
+title KPoint Equities Alpha - Push to GitHub
 echo =========================================================================
-echo   QUANTO EQUITIES // INSTITUTIONAL STOCK TERMINAL - GITHUB SYNC
+echo   KPOINT EQUITIES ALPHA // INSTITUTIONAL STOCK TERMINAL - GITHUB SYNC
 echo   Repository: https://github.com/kazzo-program/KPOINTINVESTANDTRADE1
 echo =========================================================================
 echo.
